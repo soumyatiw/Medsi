@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  password   String
+  name       String
+  role       Role      @default(PATIENT)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  doctor     Doctor?
+  patient    Patient?
+}
+
+model Doctor {
+  id             Int           @id @default(autoincrement())
+  user           User          @relation(fields: [userId], references: [id])
+  userId         Int           @unique
+  specialization String?
+  licenseNo      String?
+  appointments   Appointment[]
+  prescriptions  Prescription[]
+  reports        Report[]
+  createdAt      DateTime      @default(now())
+}
+
+model Patient {
+  id             Int          @id @default(autoincrement())
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int          @unique
+  dob            DateTime?
+  gender         String?
+  bloodGroup     String?
+  medicalNotes   String?
+  appointments   Appointment[]
+  prescriptions  Prescription[]
+  reports        Report[]
+  createdAt      DateTime     @default(now())
+}
+
+model Appointment {
+  id              Int               @id @default(autoincrement())
+  doctor          Doctor            @relation(fields: [doctorId], references: [id])
+  doctorId        Int
+  patient         Patient           @relation(fields: [patientId], references: [id])
+  patientId       Int
+  appointmentDate DateTime
+  status          AppointmentStatus @default(UPCOMING)
+  reason          String?
+  prescription    Prescription?     @relation("AppointmentToPrescription")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model Prescription {
+  id             Int          @id @default(autoincrement())
+  doctor         Doctor       @relation(fields: [doctorId], references: [id])
+  doctorId       Int
+  patient        Patient      @relation(fields: [patientId], references: [id])
+  patientId      Int
+  appointmentId  Int?         @unique
+  appointment    Appointment? @relation("AppointmentToPrescription", fields: [appointmentId], references: [id])
+  diagnosis      String
+  medicines      Json
+  notes          String?
+  createdAt      DateTime     @default(now())
+}
+
+
+model Report {
+  id          Int      @id @default(autoincrement())
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  patientId   Int
+  doctor      Doctor?  @relation(fields: [doctorId], references: [id])
+  doctorId    Int?
+  fileUrl     String
+  fileType    String
+  description String?
+  uploadedAt  DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  PATIENT
+}
+
+enum AppointmentStatus {
+  UPCOMING
+  COMPLETED
+  CANCELLED
+}
+
