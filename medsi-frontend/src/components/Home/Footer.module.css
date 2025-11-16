@@ -1,0 +1,32 @@
+.footer {
+  background: #0f172a;
+  color: white;
+  padding: 60px;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.top div h4 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.top div a {
+  display: block;
+  text-decoration: none;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.bottom {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid #475569;
+  font-size: 14px;
+  color: #cbd5e1;
+}

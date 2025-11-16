@@ -1,0 +1,109 @@
+.features {
+  text-align: center;
+  padding: 80px 60px;
+  background: #ffffff;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 16px;
+}
+
+.grid {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26px;
+}
+
+/* ---- Feature Card ---- */
+.card {
+  padding: 26px;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.06);
+  text-align: left;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  animation: fadeUp 0.8s ease forwards;
+  opacity: 0;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 15px 32px rgba(0,0,0,0.12);
+}
+
+/* ICON WRAPPER */
+.iconBox {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+/* Gradients for each card */
+.cardBlue {
+  background: linear-gradient(135deg, #ecfaff, #f1fbff);
+}
+
+.cardTeal {
+  background: linear-gradient(135deg, #ebfffc, #f0fdfa);
+}
+
+.cardOrange {
+  background: linear-gradient(135deg, #fff4ed, #fff8f3);
+}
+
+.cardPurple {
+  background: linear-gradient(135deg, #f6f1ff, #faf6ff);
+}
+
+/* Headings */
+.card h3 {
+  margin-bottom: 8px;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.card p {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Fade animation */
+@keyframes fadeUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

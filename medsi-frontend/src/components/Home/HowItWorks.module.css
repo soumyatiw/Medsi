@@ -1,0 +1,189 @@
+/* HowItWorks.module.css - improved, responsive, accessible */
+
+/* SECTION LAYOUT */
+.section {
+  padding: 80px 60px;
+  background: linear-gradient(to bottom, #f0f7ff, #ffffff);
+  text-align: center;
+}
+
+/* TITLE / SUBTITLE */
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  /* appear immediately */
+}
+
+.subtitle {
+  color: #475569;
+  margin-top: 8px;
+  margin-bottom: 50px;
+}
+
+/* WRAPPER */
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  flex-wrap: wrap;
+}
+
+/* STEP BLOCK */
+.step {
+  text-align: center;
+  max-width: 260px;
+  opacity: 0; /* initial state; animation brings it to 1 */
+  transform: translateY(18px);
+  /* animation defined below; fill-mode both keeps final state */
+  animation-name: fadeUp;
+  animation-duration: 700ms;
+  animation-timing-function: cubic-bezier(.2,.9,.2,1);
+  animation-fill-mode: both;
+}
+
+/* stagger animation: nth-of-type counts .step elements only */
+.wrapper .step:nth-of-type(1) { animation-delay: 0ms; }
+.wrapper .step:nth-of-type(2) { animation-delay: 180ms; }
+.wrapper .step:nth-of-type(3) { animation-delay: 360ms; }
+
+/* ROUND CIRCLE */
+.circle {
+  --circle-size: 110px;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  margin-left: 73px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 34px;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  cursor: default;
+}
+
+.circle:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* circle color variants */
+.circle1 {
+  background: linear-gradient(135deg, #87e2ee, #018aad);
+}
+.circle2 {
+  background: linear-gradient(135deg, #88e6c5, #1eaf73);
+}
+.circle3 {
+  background: linear-gradient(135deg, #f2be9c, #e66b2e);
+}
+
+/* badge in corner */
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #10b981;
+  font-weight: 700;
+  border: 2px solid rgba(226,232,240,0.9);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+}
+
+/* step headings & text */
+.step h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 14px;
+  color: #1e293b;
+}
+
+.step p {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 8px;
+  line-height: 1.45;
+}
+
+/* arrow styling for lucide icons (SVG stroke) */
+.arrow {
+  width: 36px;
+  height: 36px;
+  stroke: #4ca1af;     /* ensures lucide svg arrow uses the theme color */
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* small adjustment to arrow alignment */
+.wrapper .arrow {
+  margin: 0 6px;
+}
+
+/* animation keyframes */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE: smaller screens */
+@media (max-width: 900px) {
+  .wrapper {
+    gap: 30px;
+  }
+  .circle {
+    --circle-size: 92px;
+    font-size: 28px;
+  }
+  .step {
+    max-width: 220px;
+  }
+  .subtitle {
+    margin-bottom: 36px;
+  }
+}
+
+/* MOBILE: stacked layout */
+@media (max-width: 600px) {
+  .wrapper {
+    flex-direction: column;
+    gap: 28px;
+  }
+  .arrow { display: none; }
+  .circle {
+    --circle-size: 84px;
+    font-size: 24px;
+  }
+  .bad
+  ge { /* fix accidental line-breaks in some editors */
+    top: -6px;
+    right: -6px;
+  }
+}
+
+/* Accessibility: Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .step,
+  .circle,
+  .badge {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

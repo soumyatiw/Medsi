@@ -1,0 +1,30 @@
+.cta {
+  padding: 80px 60px;
+  text-align: center;
+  background: linear-gradient(to right, #4ca1af, #2c7a93);
+  color: white;
+  border-radius: 16px;
+  margin: 60px;
+}
+
+.buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.primaryBtn {
+  padding: 12px 24px;
+  background: #ffffff;
+  color: #2c7a93;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.secondaryBtn {
+  padding: 12px 24px;
+  border: 1px solid white;
+  color: white;
+  border-radius: 10px;
+}
