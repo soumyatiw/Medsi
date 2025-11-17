@@ -1,30 +1,104 @@
 .cta {
   padding: 80px 60px;
   text-align: center;
-  background: linear-gradient(to right, #4ca1af, #2c7a93);
+  background: linear-gradient(135deg, #4ca1af, #2c7a93, #7dd5ce);
   color: white;
-  border-radius: 16px;
-  margin: 60px;
+  border-radius: 20px;
+  margin: 60px auto;
+  max-width: 1200px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+}
+
+.cta h2 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.cta p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #e0f7f9;
 }
 
 .buttons {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
+/* Primary button */
 .primaryBtn {
-  padding: 12px 24px;
+  padding: 14px 28px;
   background: #ffffff;
   color: #2c7a93;
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
+.primaryBtn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.2);
+  transform: skewX(-20deg);
+  transition: all 0.5s ease;
+}
+
+.primaryBtn:hover::after {
+  left: 100%;
+}
+
+.primaryBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Secondary button */
 .secondaryBtn {
-  padding: 12px 24px;
-  border: 1px solid white;
+  padding: 14px 28px;
+  border: 2px solid white;
   color: white;
-  border-radius: 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cta {
+    padding: 60px 20px;
+  }
+  .cta h2 {
+    font-size: 28px;
+  }
+  .cta p {
+    font-size: 16px;
+  }
+  .buttons {
+    flex-direction: column;
+    gap: 16px;
+  }
 }

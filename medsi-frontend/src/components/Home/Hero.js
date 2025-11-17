@@ -17,7 +17,7 @@ export default function Hero() {
                 </h1>
 
                 <p className={`${styles.subtitle} ${styles.fadeInDelay}`}>
-                    Access prescriptions, reports, and appointments — anytime, anywhere.
+                    Access prescriptions, reports, and appointments anytime, anywhere.
                     Your complete healthcare journey in one secure platform.
                 </p>
                 <div className={`${styles.buttons} ${styles.fadeInDelay2}`}>

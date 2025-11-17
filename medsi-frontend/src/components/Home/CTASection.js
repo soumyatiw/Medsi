@@ -1,4 +1,5 @@
 import styles from "./CTASection.module.css";
+import Link from "next/link";
 
 export default function CTASection() {
   return (
@@ -7,9 +8,10 @@ export default function CTASection() {
       <p>Join thousands of patients and doctors who trust Medsi.</p>
 
       <div className={styles.buttons}>
-        <a href="/signup" className={styles.primaryBtn}>Get Started Free</a>
-        <a href="/login" className={styles.secondaryBtn}>Schedule a Demo</a>
+        <Link href="/signup" className={styles.primaryBtn}>Get Started Free</Link>
+        <Link href="/login" className={styles.secondaryBtn}>Schedule a Demo</Link>
       </div>
     </section>
   );
 }
+
