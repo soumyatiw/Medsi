@@ -1,0 +1,125 @@
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: linear-gradient(to bottom right, #e6f7ff, #ffffff);
+}
+
+.card {
+  width: 550px;
+  max-width: 95%;
+  background: #ffffff;
+  padding: 48px 40px;
+  border-radius: 22px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e4edf4;
+  animation: fadeUp 0.5s ease;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.10);
+}
+
+
+.card h2 {
+  font-size: 30px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.subtitle {
+  margin-bottom: 20px;
+  color: #64748b;
+  font-size: 15px;
+}
+
+
+.card input,
+.card select,
+.card textarea {
+  width: 100%;
+  padding: 14px 16px;
+  margin: 12px 0;
+  border-radius: 12px;
+  border: 1px solid #cbd7e3;
+  background: #f8fcff;
+  outline: none;
+  font-size: 15px;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card input:focus,
+.card select:focus,
+.card textarea:focus {
+  border-color: #4ca1af;
+  background: #f0fcff;
+  box-shadow: 0 0 0 4px rgba(76, 161, 175, 0.18); /* beautiful glow */
+}
+
+
+.card textarea {
+  height: 120px;
+  resize: none;
+}
+
+.card button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  background: #4ca1af;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+
+.card button:hover {
+  background: #3a8d99;
+  transform: translateY(-2px);
+}
+
+.loginText {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #475569;
+}
+
+.loginText a {
+  color: #4ca1af;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.loginText a:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 500px) {
+  .card {
+    padding: 32px 25px;
+    width: 100%;
+  }
+  
+  .card h2 {
+    font-size: 26px;
+  }
+}

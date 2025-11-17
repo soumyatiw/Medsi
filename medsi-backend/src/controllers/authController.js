@@ -20,71 +20,99 @@ const generateTokens = (user) => {
 };
 
 // 🟢 SIGNUP Controller
+// SIGNUP Controller (Fully Corrected)
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password, role, specialization, licenseNo, dob, gender, bloodGroup, medicalNotes } = req.body;
+    let {
+      name,
+      email,
+      password,
+      role,
+      specialization,
+      licenseNo,
+      dob,
+      gender,
+      bloodGroup,
+      medicalNotes
+    } = req.body;
 
     // Validate required fields
-    if (!email || !password || !name) {
-      return res.status(400).json({ message: 'Name, email, and password are required' });
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Name, email, and password are required" });
     }
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists with this email' });
+    // Convert role to uppercase (backend expects ADMIN/DOCTOR/PATIENT)
+    role = role?.toUpperCase() || "PATIENT";
+
+    // Check user exists
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return res.status(400).json({ message: "User already exists with this email" });
     }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create base user
+    // Create main User
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        role: role || 'PATIENT',
-      },
+        role
+      }
     });
 
-    // Create related Doctor or Patient record based on role
-    if (newUser.role === 'DOCTOR') {
+    // FIX: Convert empty strings to null
+    specialization = specialization?.trim() || null;
+    licenseNo = licenseNo?.trim() || null;
+    gender = gender?.trim() || null;
+    bloodGroup = bloodGroup?.trim() || null;
+    medicalNotes = medicalNotes?.trim() || null;
+
+    // FIX: Handle DOB properly
+    dob = dob ? new Date(dob) : null;
+
+    // Create Doctor or Patient
+    if (role === "DOCTOR") {
       await prisma.doctor.create({
         data: {
           userId: newUser.id,
           specialization,
-          licenseNo,
-        },
-      });
-    } else if (newUser.role === 'PATIENT') {
-      await prisma.patient.create({
-        data: {
-          userId: newUser.id,
-          dob: dob ? new Date(dob) : null,
-          gender,
-          bloodGroup,
-          medicalNotes,
-        },
+          licenseNo
+        }
       });
     }
 
-    // Generate tokens
+    if (role === "PATIENT") {
+      await prisma.patient.create({
+        data: {
+          userId: newUser.id,
+          dob,
+          gender,
+          bloodGroup,
+          medicalNotes
+        }
+      });
+    }
+
+    // Generate Tokens
     const { accessToken, refreshToken } = generateTokens(newUser);
 
-    res.status(201).json({
-      message: 'Signup successful',
+    return res.status(201).json({
+      message: "Signup successful",
       user: {
         id: newUser.id,
-        name: newUser.name,
         email: newUser.email,
-        role: newUser.role,
+        name: newUser.name,
+        role: newUser.role
       },
-      tokens: { accessToken, refreshToken },
+      tokens: { accessToken, refreshToken }
     });
+
   } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ message: 'Server error during signup' });
+    console.error("Signup error:", error);
+    return res.status(500).json({ message: "Server error during signup" });
   }
 };
 
