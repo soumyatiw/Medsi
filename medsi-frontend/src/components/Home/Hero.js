@@ -1,5 +1,6 @@
 import styles from "./Hero.module.css";
 import Image from "next/image";
+import Link from "next/link";
 import { Pill, Dna, Stethoscope } from "lucide-react";
 
 export default function Hero() {
@@ -19,14 +20,13 @@ export default function Hero() {
                     Access prescriptions, reports, and appointments — anytime, anywhere.
                     Your complete healthcare journey in one secure platform.
                 </p>
-
                 <div className={`${styles.buttons} ${styles.fadeInDelay2}`}>
-                    <a href="/login" className={styles.primaryBtn}>
+                    <Link href="/login" className={styles.primaryBtn}>
                         Login as Patient
-                    </a>
-                    <a href="/login" className={styles.outlineBtn}>
+                    </Link>
+                    <Link href="/login" className={styles.outlineBtn}>
                         Login as Doctor
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Floating Badges */}

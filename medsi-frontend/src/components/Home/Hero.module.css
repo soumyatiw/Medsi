@@ -209,7 +209,7 @@
 
 .badge1 { top: -0px; left: 300px; }
 .badge2 { bottom: 200px; left: 350px; animation-delay: 1s; }
-.badge3 { bottom: 150px; left: 400px; animation-delay: 1s; }
+.badge3 { bottom: 150px; left: 400px; animation-delay: 2s; }
 
 /* BADGE FLOATING */
 @keyframes floatBadge {

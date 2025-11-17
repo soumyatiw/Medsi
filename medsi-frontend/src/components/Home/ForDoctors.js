@@ -4,7 +4,7 @@ import { UserCog, NotebookPen, BarChart3 } from "lucide-react";
 
 export default function ForDoctors() {
   return (
-    <section id="forDoctors" className={styles.section}>
+    <section id="doctors" className={styles.section}>
       {/* Section Heading */}
       <h2 className={styles.title}>Built for Doctors</h2>
       <p className={styles.subtitle}>
@@ -33,7 +33,7 @@ export default function ForDoctors() {
         {/* Card 3 */}
         <div className={styles.card}>
           <div className={styles.iconBox}>
-            <BarChart3 size={36} color="#4ca1af" />
+            <BarChart3 size={36} color="#ff981bff" />
           </div>
           <h3>Analytics Dashboard</h3>
           <p>Track patient stats, appointments, and daily workflow.</p>

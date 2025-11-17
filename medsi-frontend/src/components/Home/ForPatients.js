@@ -4,7 +4,7 @@ import { CalendarCheck2, FileHeart, Activity } from "lucide-react";
 
 export default function ForPatients() {
   return (
-    <section id="forPatients" className={styles.section}>
+    <section id="patients" className={styles.section}>
       {/* Section Heading */}
       <h2 className={styles.title}>Designed for Patients</h2>
       <p className={styles.subtitle}>
@@ -33,7 +33,7 @@ export default function ForPatients() {
         {/* Card 3 */}
         <div className={styles.card}>
           <div className={styles.iconBox}>
-            <Activity size={36} color="#4ca1af" />
+            <Activity size={36} color="#ff981bff" />
           </div>
           <h3>Health Tracking</h3>
           <p>Monitor vitals, progress, and receive timely reminders.</p>
