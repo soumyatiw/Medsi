@@ -1,9 +1,12 @@
 import { useState } from "react";
 import styles from "../styles/Signup.module.css";
-import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import API from "../api/axiosInstance"; // ← updated
 
 export default function Signup() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -27,7 +30,6 @@ export default function Signup() {
     e.preventDefault();
     setLoading(true);
 
-    // Fix: Empty strings → null
     const cleaned = {
       ...form,
       specialization: form.specialization || null,
@@ -40,19 +42,26 @@ export default function Signup() {
     };
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/signup", cleaned);
+      // ⬅ UPDATED: using axiosInstance API
+      const res = await API.post("/api/auth/signup", cleaned);
 
       alert("Account created successfully!");
 
-      // Save tokens & user info
       localStorage.setItem("accessToken", res.data.tokens.accessToken);
       localStorage.setItem("refreshToken", res.data.tokens.refreshToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Redirect based on role
-      if (res.data.user.role === "PATIENT") window.location.href = "/patient";
-      else if (res.data.user.role === "DOCTOR") window.location.href = "/doctor";
-      else window.location.href = "/admin";
+      // SSR cookie for protected dashboards
+      document.cookie = `user=${JSON.stringify(
+        res.data.user
+      )}; path=/; SameSite=Lax;`;
+
+      // ROUTE REDIRECT
+      const role = res.data.user.role.toUpperCase();
+
+      if (role === "PATIENT") router.push("/patient");
+      else if (role === "DOCTOR") router.push("/doctor");
+      else router.push("/admin");
 
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
@@ -86,14 +95,21 @@ export default function Signup() {
         {form.role === "PATIENT" && (
           <>
             <input name="dob" type="date" onChange={handleChange} />
+
             <select name="gender" onChange={handleChange}>
               <option value="">Gender</option>
               <option value="MALE">Male</option>
               <option value="FEMALE">Female</option>
               <option value="OTHER">Other</option>
             </select>
+
             <input name="bloodGroup" placeholder="Blood Group" onChange={handleChange} />
-            <textarea name="medicalNotes" placeholder="Medical Notes" onChange={handleChange}></textarea>
+
+            <textarea
+              name="medicalNotes"
+              placeholder="Medical Notes"
+              onChange={handleChange}
+            ></textarea>
           </>
         )}
 

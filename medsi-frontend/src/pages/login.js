@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styles from "../styles/Login.module.css";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import API from "../api/axiosInstance";
 
 export default function Login() {
   const router = useRouter();
@@ -16,28 +16,29 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/login", {
+      const res = await API.post("/api/auth/login", {
         email,
         password,
       });
 
       alert("Login successful!");
 
-      // Save tokens
+      // Save tokens + user
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // VERY IMPORTANT — Set cookie so SSR dashboards detect login
-      document.cookie = `user=${JSON.stringify(res.data.user)}; path=/;`;
+      // For SSR dashboards (patient, doctor, admin)
+      document.cookie = `user=${JSON.stringify(
+        res.data.user
+      )}; path=/; SameSite=Lax;`;
 
       const role = res.data.user.role.toUpperCase();
 
-      // Use router.push instead of window.location.href
+      // Use router.push for smooth navigation
       if (role === "PATIENT") router.push("/patient");
       if (role === "DOCTOR") router.push("/doctor");
       if (role === "ADMIN") router.push("/admin");
-
     } catch (err) {
       alert(err.response?.data?.message || "Invalid credentials");
     }
@@ -51,8 +52,19 @@ export default function Login() {
         <h2>Welcome Back !</h2>
         <p className={styles.subtitle}>Login to your account</p>
 
-        <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
+        <input
+          type="email"
+          placeholder="Email"
+          required
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          required
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <button disabled={loading}>
           {loading ? "Logging in…" : "Login"}
