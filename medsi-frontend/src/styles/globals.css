@@ -41,3 +41,22 @@ a {
     color-scheme: dark;
   }
 }
+
+.grid {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+
+@media (max-width: 850px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 550px) {
+  .grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+

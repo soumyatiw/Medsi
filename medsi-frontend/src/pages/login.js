@@ -2,8 +2,11 @@ import { useState } from "react";
 import styles from "../styles/Login.module.css";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Login() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,15 +23,20 @@ export default function Login() {
 
       alert("Login successful!");
 
+      // Save tokens
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
+      // VERY IMPORTANT — Set cookie so SSR dashboards detect login
+      document.cookie = `user=${JSON.stringify(res.data.user)}; path=/;`;
+
       const role = res.data.user.role.toUpperCase();
 
-      if (role === "PATIENT") window.location.href = "/patient";
-      if (role === "DOCTOR") window.location.href = "/doctor";
-      if (role === "ADMIN") window.location.href = "/admin";
+      // Use router.push instead of window.location.href
+      if (role === "PATIENT") router.push("/patient");
+      if (role === "DOCTOR") router.push("/doctor");
+      if (role === "ADMIN") router.push("/admin");
 
     } catch (err) {
       alert(err.response?.data?.message || "Invalid credentials");
