@@ -2,29 +2,30 @@ const express = require("express");
 const router = express.Router();
 
 const doctorController = require("../controllers/doctorController");
-const { verifyToken, checkRole } = require('../middleware/authMiddleware');
+const { verifyToken, checkRole } = require("../middleware/authMiddleware");
 
-// All doctor routes require AUTH + DOCTOR ROLE
+// Auth middleware
 router.use(verifyToken);
 router.use(checkRole("DOCTOR"));
 
-// Doctor APIs
+/* ------------------ Patient Routes ------------------ */
 router.get("/dashboard", doctorController.getDashboardStats);
+// Get all linked patients
+router.get("/patients", doctorController.getDoctorPatients);
 
-// Patients
-router.get("/patients", doctorController.getPatients); // list/search/paginate
-router.post("/patients", doctorController.createPatient); // create
-router.get("/patients/:id", doctorController.getPatientDetails); // details
-router.put("/patients/:id", doctorController.updatePatient); // update
-router.delete("/patients/:id", doctorController.deletePatient); // delete
+// Get single linked patient
+router.get("/patients/:id", doctorController.getDoctorPatientById);
 
+// Create OR link patient
+router.post("/patients", doctorController.createPatientAndLink);
 
-router.get("/appointments", doctorController.getAppointments);
-router.put("/appointments/:id", doctorController.updateAppointmentStatus);
+// Link existing patient
+router.post("/patients/link", doctorController.linkExistingPatientToDoctor);
 
-router.post("/prescriptions", doctorController.createPrescription);
-router.put("/prescriptions/:id", doctorController.updatePrescription);
+// Update linked patient
+router.put("/patients/:id", doctorController.updatePatient);
 
-router.post("/reports", doctorController.uploadReport);
+// Unlink patient
+router.delete("/patients/:id", doctorController.deletePatient);
 
 module.exports = router;

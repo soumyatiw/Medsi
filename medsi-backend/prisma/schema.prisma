@@ -21,22 +21,22 @@ model User {
 }
 
 model Doctor {
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String        @unique @db.ObjectId
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String            @unique @db.ObjectId
   specialization String?
   licenseNo      String?
   appointments   Appointment[]
   prescriptions  Prescription[]
   reports        Report[]
-  patients       Patient[]
-  createdAt      DateTime      @default(now())
+  doctorPatients DoctorPatient[]   // MANY–TO–MANY via linking table
+  createdAt      DateTime          @default(now())
 
-  user           User          @relation(fields: [userId], references: [id])
+  user           User              @relation(fields: [userId], references: [id])
 }
 
 model Patient {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String       @unique @db.ObjectId
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String            @unique @db.ObjectId
   dob            DateTime?
   gender         String?
   bloodGroup     String?
@@ -44,12 +44,10 @@ model Patient {
   appointments   Appointment[]
   prescriptions  Prescription[]
   reports        Report[]
-  createdAt      DateTime     @default(now())
+  doctorPatients DoctorPatient[]   // MANY–TO–MANY via linking table
+  createdAt      DateTime          @default(now())
 
-  doctorId       String?      @db.ObjectId
-  doctor         Doctor?      @relation(fields: [doctorId], references: [id])
-
-  user           User         @relation(fields: [userId], references: [id])
+  user           User              @relation(fields: [userId], references: [id])
 }
 
 model Appointment {
@@ -93,6 +91,20 @@ model Report {
 
   patient     Patient    @relation(fields: [patientId], references: [id])
   doctor      Doctor?    @relation(fields: [doctorId], references: [id])
+}
+
+model DoctorPatient {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  doctorId   String   @db.ObjectId
+  patientId  String   @db.ObjectId
+
+  doctor     Doctor   @relation(fields: [doctorId], references: [id])
+  patient    Patient  @relation(fields: [patientId], references: [id])
+
+  createdAt  DateTime @default(now())
+
+  @@unique([doctorId, patientId], name: "doctor_patient_unique")
 }
 
 enum Role {
