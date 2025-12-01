@@ -8,6 +8,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
 const patientRoutes = require('./routes/patientRoutes');
 
+
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
