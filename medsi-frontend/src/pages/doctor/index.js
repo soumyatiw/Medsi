@@ -49,6 +49,7 @@ export default function DoctorDashboard({ user }) {
             value={stats.patients}
             desc="Total registered patients"
             icon={<Users size={34} />}
+            theme="yellow"
           />
 
           <DashboardCard
@@ -56,6 +57,7 @@ export default function DoctorDashboard({ user }) {
             value={stats.appointments}
             desc="Upcoming & completed appointments"
             icon={<Calendar size={34} />}
+            theme="teal"
           />
 
           <DashboardCard
@@ -63,6 +65,7 @@ export default function DoctorDashboard({ user }) {
             value={stats.prescriptions}
             desc="Issued prescriptions"
             icon={<Pill size={34} />}
+            theme="blue"
           />
 
           <DashboardCard
@@ -70,6 +73,7 @@ export default function DoctorDashboard({ user }) {
             value={stats.reports}
             desc="Uploaded medical reports"
             icon={<FileText size={34} />}
+            theme="purple"
           />
         </div>
       </div>

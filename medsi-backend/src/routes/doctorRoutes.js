@@ -28,4 +28,13 @@ router.put("/patients/:id", doctorController.updatePatient);
 // Unlink patient
 router.delete("/patients/:id", doctorController.deletePatient);
 
+
+/* ------------------ Appointment Routes ------------------ */
+
+// Get appointments (with filters & pagination)
+router.get("/appointments", doctorController.getAppointments);
+router.delete("/appointments/:id", doctorController.deleteAppointment);
+// Update appointment status
+router.put("/appointments/:id/status", doctorController.updateAppointmentStatus);
+
 module.exports = router;

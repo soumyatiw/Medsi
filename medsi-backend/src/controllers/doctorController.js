@@ -388,3 +388,135 @@ exports.deletePatient = async (req, res) => {
     res.status(500).json({ message: "Failed to unlink patient" });
   }
 };
+
+
+/* ---------------------------------------------------------
+   GET ALL APPOINTMENTS (FILTER + PAGINATION)
+--------------------------------------------------------- */
+exports.getAppointments = async (req, res) => {
+  try {
+    const doctor = await getDoctorFromUser(req.user.id);
+    if (!doctor)
+      return res.status(403).json({ message: "Doctor profile not found" });
+
+    const page = parseInt(req.query.page || 1);
+    const limit = parseInt(req.query.limit || 10);
+    const status = req.query.status || "";
+    const search = req.query.search || "";
+
+    const skip = (page - 1) * limit;
+
+    const filters = {
+      doctorId: doctor.id,
+    };
+
+    if (status) filters.status = status;
+
+    const total = await prisma.appointment.count({
+      where: filters,
+    });
+
+    const appointments = await prisma.appointment.findMany({
+      where: filters,
+      skip,
+      take: limit,
+      orderBy: { appointmentDate: "desc" },
+      include: {
+        patient: {
+          include: { user: true }
+        }
+      }
+    });
+
+    // Apply search filter manually (Mongo + Prisma limitation)
+    const filtered = search
+      ? appointments.filter(a =>
+          a.patient.user.name.toLowerCase().includes(search.toLowerCase()) ||
+          a.patient.user.email.toLowerCase().includes(search.toLowerCase())
+        )
+      : appointments;
+
+    res.json({
+      data: filtered,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+
+  } catch (err) {
+    console.error("getAppointments error:", err);
+    res.status(500).json({ message: "Failed to fetch appointments" });
+  }
+};
+
+/* ---------------------------------------------------------
+   UPDATE APPOINTMENT STATUS
+--------------------------------------------------------- */
+exports.updateAppointmentStatus = async (req, res) => {
+  try {
+    const doctor = await getDoctorFromUser(req.user.id);
+    if (!doctor)
+      return res.status(403).json({ message: "Doctor profile not found" });
+
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["UPCOMING", "COMPLETED", "CANCELLED"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    const appointment = await prisma.appointment.findUnique({ where: { id } });
+
+    if (!appointment)
+      return res.status(404).json({ message: "Appointment not found" });
+
+    if (appointment.doctorId !== doctor.id)
+      return res.status(403).json({ message: "Not your appointment" });
+
+    const updated = await prisma.appointment.update({
+      where: { id },
+      data: { status }
+    });
+
+    res.json({
+      message: "Status updated",
+      appointment: updated,
+    });
+
+  } catch (err) {
+    console.error("updateAppointmentStatus error:", err);
+    res.status(500).json({ message: "Failed to update status" });
+  }
+};
+
+/* ---------------------------------------------------------
+   DELETE APPOINTMENT
+--------------------------------------------------------- */
+exports.deleteAppointment = async (req, res) => {
+  try {
+    const doctor = await getDoctorFromUser(req.user.id);
+    if (!doctor)
+      return res.status(403).json({ message: "Doctor profile not found" });
+
+    const { id } = req.params;
+
+    const appointment = await prisma.appointment.findUnique({ where: { id } });
+
+    if (!appointment)
+      return res.status(404).json({ message: "Appointment not found" });
+
+    if (appointment.doctorId !== doctor.id)
+      return res.status(403).json({ message: "Not your appointment" });
+
+    await prisma.appointment.delete({ where: { id } });
+
+    res.json({ message: "Appointment deleted" });
+
+  } catch (err) {
+    console.error("deleteAppointment error:", err);
+    res.status(500).json({ message: "Failed to delete appointment" });
+  }
+};

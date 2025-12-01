@@ -1,60 +1,293 @@
-/* src/styles/DoctorPatients.module.css */
+/* ---------------------------------------------------------
+   PAGE LAYOUT
+--------------------------------------------------------- */
 .container {
-  padding: 28px 48px;
+  padding: 34px 60px;
+  animation: fadeIn 0.3s ease;
 }
 
 .header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
-.header h2 { margin:0; font-size:24px; color:#0f172a; }
 
+.header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* ---------------------------------------------------------
+   SEARCH + BUTTONS
+--------------------------------------------------------- */
 .searchInput {
-  padding:8px 12px;
-  border-radius:8px;
-  border:1px solid #e6eef8;
-  margin-right:10px;
-  min-width:220px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cfd8e3;
+  margin-right: 12px;
+  min-width: 240px;
+  background: #f7fafc;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: #4ca1af;
+  box-shadow: 0 0 8px rgba(76, 161, 175, 0.4);
 }
 
 .primary {
-  background:#4ca1af;
-  color:white;
-  padding:8px 12px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
+  background: linear-gradient(135deg, #4ca1af, #2c8a99);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
+  box-shadow: 0 4px 14px rgba(76,161,175,0.3);
 }
 
-.tableWrap { margin-top:14px; background:#fff; border-radius:10px; padding:8px; box-shadow:0 6px 18px rgba(0,0,0,0.04); }
+.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(76,161,175,0.38);
+}
 
-.table { width:100%; border-collapse:collapse; }
-.table th, .table td { padding:12px 14px; border-bottom:1px solid #f4f6f8; text-align:left; }
-.table th { background:#fbfdff; font-weight:700; color:#475569; }
+/* ---------------------------------------------------------
+   TABLE CONTAINER
+--------------------------------------------------------- */
+.tableWrap {
+  margin-top: 20px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+  border: 1px solid #e8edf3;
+}
 
-.actions { display:flex; gap:8px; }
-.actions button { padding:6px 8px; border-radius:8px; border:1px solid #e6eef8; background:#fff; cursor:pointer; }
-.actions .danger { background:#ffecec; color:#b71c1c; border-color:#ffd7d7; }
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-.pagination { margin-top:12px; display:flex; justify-content:center; gap:12px; align-items:center; }
+.table th {
+  padding: 14px;
+  background: #f9fbff;
+  border-bottom: 2px solid #eef2f8;
+  font-weight: 700;
+  color: #475569;
+  font-size: 14px;
+  text-align: left;
+}
 
-/* Modal */
+.table td {
+  padding: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.table tr:hover {
+  background: #f8fdff;
+}
+
+/* ---------------------------------------------------------
+   ACTION BUTTONS
+--------------------------------------------------------- */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #dce4ee;
+  background: #ffffff;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 13px;
+}
+
+.actions button:hover {
+  background: #f1f9ff;
+  border-color: #4ca1af;
+  color: #4ca1af;
+}
+
+.actions .danger {
+  background: #ffecec;
+  color: #b40000 !important;
+  border-color: #ffcccc;
+}
+
+.actions .danger:hover {
+  background: #ffdada;
+  border-color: #ffb3b3;
+}
+
+/* ---------------------------------------------------------
+   PAGINATION
+--------------------------------------------------------- */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d5dde5;
+  background: white;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 14px;
+}
+
+.pagination button:hover {
+  background: #f1f9ff;
+  border-color: #4ca1af;
+}
+
+/* ---------------------------------------------------------
+   MODAL OVERLAY
+--------------------------------------------------------- */
 .modalOverlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:1000;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
+
+/* ---------------------------------------------------------
+   MODAL BOX
+--------------------------------------------------------- */
 .modal {
-  width:720px;
-  max-width:95%;
-  background:#fff; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.3); overflow:hidden;
+  width: 720px;
+  max-width: 95%;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.25);
+  overflow: hidden;
+  animation: slideUp 0.25s ease;
 }
-.modalHeader { display:flex; justify-content:space-between; align-items:center; padding:16px 18px; border-bottom:1px solid #f3f6f9; }
-.modalBody { padding:16px 18px; max-height:70vh; overflow:auto; }
-.closeBtn { background:none; border:none; font-size:18px; cursor:pointer; }
 
-.form label { display:block; margin-top:10px; font-size:13px; color:#475569; }
-.form input, .form select, .form textarea { width:100%; padding:10px; border-radius:8px; border:1px solid #e6eef8; margin-top:6px; }
-.form textarea { min-height:80px; resize:vertical; }
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-bottom: 1px solid #eef1f5;
+}
 
-.modalFooter { display:flex; justify-content:flex-end; gap:10px; margin-top:12px; }
+.modalHeader h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #475569;
+  transition: 0.2s ease;
+}
+
+.closeBtn:hover {
+  color: #1e293b;
+}
+
+.modalBody {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* ---------------------------------------------------------
+   FORM STYLES
+--------------------------------------------------------- */
+.form label {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.form input,
+.form select,
+.form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccd6e3;
+  margin-top: 6px;
+  font-size: 14px;
+  background: #f8fafc;
+  transition: 0.2s ease;
+}
+
+.form input:focus,
+.form textarea:focus,
+.form select:focus {
+  border-color: #4ca1af;
+  box-shadow: 0 0 8px rgba(76,161,175,0.3);
+}
+
+.form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* ---------------------------------------------------------
+   MODAL FOOTER
+--------------------------------------------------------- */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.modalFooter button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modalFooter .primary {
+  background: #4ca1af;
+  color: white;
+}
+
+.modalFooter button:hover {
+  opacity: 0.9;
+}
+
+/* ---------------------------------------------------------
+   ANIMATIONS
+--------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}

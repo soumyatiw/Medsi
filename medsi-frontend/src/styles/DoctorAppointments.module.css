@@ -1,0 +1,196 @@
+/* ---------------------------------------------------------
+   PAGE LAYOUT
+--------------------------------------------------------- */
+.container {
+  padding: 32px 60px;
+  animation: fadeIn 0.3s ease;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 18px;
+}
+
+/* ---------------------------------------------------------
+   FILTER BAR
+--------------------------------------------------------- */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 1px solid #e5eaf1;
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.05);
+}
+
+.filters input,
+.filters select {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cfd8e3;
+  font-size: 14px;
+  background: #f7fafc;
+  transition: 0.2s ease;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #4ca1af;
+  box-shadow: 0 0 5px rgba(76,161,175,0.4);
+}
+
+/* ---------------------------------------------------------
+   TABLE WRAPPER
+--------------------------------------------------------- */
+.tableWrap {
+  margin-top: 20px;
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+  border: 1px solid #e8edf3;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #f9fbff;
+  padding: 14px;
+  font-weight: 700;
+  color: #475569;
+  font-size: 14px;
+  border-bottom: 2px solid #eef2f8;
+  text-align: left;
+}
+
+.table td {
+  padding: 14px;
+  font-size: 14px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* ---------------------------------------------------------
+   BADGE STYLES
+--------------------------------------------------------- */
+.status {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.upcoming {
+  background: #e0f7fa;
+  color: #007b83;
+}
+
+.completed {
+  background: #e6ffed;
+  color: #2f855a;
+}
+
+.cancelled {
+  background: #ffe6e6;
+  color: #c53030;
+}
+
+/* ---------------------------------------------------------
+   ACTION BUTTONS
+--------------------------------------------------------- */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actionBtn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #dce4ee;
+  cursor: pointer;
+  background: #ffffff;
+  transition: 0.2s;
+  font-size: 13px;
+}
+
+.actionBtn:hover {
+  background: #f1f9ff;
+  border-color: #4ca1af;
+  color: #4ca1af;
+}
+
+.delete {
+  background: #ffecec;
+  color: #b40000 !important;
+  border: 1px solid #ffcccc;
+}
+
+.delete:hover {
+  background: #ffdbdb;
+  border-color: #ffb3b3;
+}
+
+/* ---------------------------------------------------------
+   PAGINATION
+--------------------------------------------------------- */
+.pagination {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d5dde5;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.pagination button:hover {
+  background: #f1f9ff;
+  border-color: #4ca1af;
+}
+
+/* ---------------------------------------------------------
+   ANIMATIONS
+--------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+--------------------------------------------------------- */
+@media (max-width: 900px) {
+  .container {
+    padding: 20px;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tableWrap {
+    padding: 8px;
+  }
+
+  .table th, .table td {
+    padding: 10px;
+  }
+}
