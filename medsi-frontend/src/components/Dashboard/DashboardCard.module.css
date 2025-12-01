@@ -38,6 +38,15 @@
   line-height: 1.4;
 }
 
+.value {
+  font-size: 32px;
+  font-weight: 800;
+  margin-top: 12px;
+  color: #4ca1af;
+  animation: fadeUp 0.6s ease;
+}
+
+
 /* RESPONSIVE */
 @media (max-width: 600px) {
   .card {

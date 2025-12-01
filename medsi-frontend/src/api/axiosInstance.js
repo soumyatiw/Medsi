@@ -12,13 +12,19 @@ const API = axios.create({
   },
 });
 
-// attach bearer token from localStorage (if present) for browser requests
-API.interceptors.request.use((config) => {
-  if (isBrowser) {
-    const token = localStorage.getItem("accessToken");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// Attach bearer token from localStorage for browser requests
+API.interceptors.request.use(
+  (config) => {
+    if (isBrowser) {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default API;

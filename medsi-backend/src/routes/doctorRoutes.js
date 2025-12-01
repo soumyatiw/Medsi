@@ -9,8 +9,15 @@ router.use(verifyToken);
 router.use(checkRole("DOCTOR"));
 
 // Doctor APIs
-router.get("/patients", doctorController.getPatients);
-router.get("/patients/:id", doctorController.getPatientDetails);
+router.get("/dashboard", doctorController.getDashboardStats);
+
+// Patients
+router.get("/patients", doctorController.getPatients); // list/search/paginate
+router.post("/patients", doctorController.createPatient); // create
+router.get("/patients/:id", doctorController.getPatientDetails); // details
+router.put("/patients/:id", doctorController.updatePatient); // update
+router.delete("/patients/:id", doctorController.deletePatient); // delete
+
 
 router.get("/appointments", doctorController.getAppointments);
 router.put("/appointments/:id", doctorController.updateAppointmentStatus);

@@ -28,6 +28,7 @@ model Doctor {
   appointments   Appointment[]
   prescriptions  Prescription[]
   reports        Report[]
+  patients       Patient[]
   createdAt      DateTime      @default(now())
 
   user           User          @relation(fields: [userId], references: [id])
@@ -44,6 +45,9 @@ model Patient {
   prescriptions  Prescription[]
   reports        Report[]
   createdAt      DateTime     @default(now())
+
+  doctorId       String?      @db.ObjectId
+  doctor         Doctor?      @relation(fields: [doctorId], references: [id])
 
   user           User         @relation(fields: [userId], references: [id])
 }
