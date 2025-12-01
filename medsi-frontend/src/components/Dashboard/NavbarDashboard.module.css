@@ -21,6 +21,16 @@
   letter-spacing: -0.5px;
 }
 
+.brandContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo{
+  width :50px;
+  height :40px;
+}
 /* LINKS CONTAINER */
 .links {
   display: flex;

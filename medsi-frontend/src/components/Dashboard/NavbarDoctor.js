@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./NavbarDashboard.module.css";
+import Image from "next/image";
 import { Users, Calendar, FileText, Pill, LogOut } from "lucide-react";
 import { useRouter } from "next/router";
 
@@ -21,8 +22,16 @@ export default function NavbarDoctor() {
 
   return (
     <nav className={styles.nav}>
-      <h2 className={styles.brand}>Medsi Doctor</h2>
-
+      <div className={styles.brandContainer}>
+      <Image
+          src="/images/logo.png"
+          alt="Medsi Logo"
+          width={36}
+          height={36}
+          className={styles.logo}
+        />
+      <h2 className={styles.brand}>Medsi</h2>
+      </div>
       <div className={styles.links}>
         <Link href="/doctor">Dashboard</Link>
         <Link href="/doctor/patients"><Users size={18}/> My Patients</Link>

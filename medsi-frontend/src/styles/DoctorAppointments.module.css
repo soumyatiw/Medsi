@@ -6,6 +6,11 @@
   animation: fadeIn 0.3s ease;
 }
 
+.container h2{
+  font-size: 28px;
+  padding-bottom: 20px;
+}
+
 .title {
   font-size: 28px;
   font-weight: 800;

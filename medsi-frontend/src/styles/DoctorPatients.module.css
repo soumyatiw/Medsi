@@ -42,6 +42,7 @@
   background: linear-gradient(135deg, #4ca1af, #2c8a99);
   color: white;
   padding: 10px 16px;
+  margin-right: 8px;
   border-radius: 10px;
   border: none;
   cursor: pointer;
