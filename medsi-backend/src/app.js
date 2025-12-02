@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
 const patientRoutes = require('./routes/patientRoutes');
+const patientBookingRoutes = require("./routes/patientBookingRoutes");
 
 
 const errorHandler = require('./middleware/errorHandler');
@@ -34,6 +35,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/doctor', doctorRoutes);
 app.use('/api/patient', patientRoutes);
+app.use("/api/doctor/slots", require("./routes/doctorSlotRoutes"));
+app.use("/api/patient", patientBookingRoutes);
 
 // health
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));

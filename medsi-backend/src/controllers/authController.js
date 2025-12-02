@@ -3,22 +3,26 @@ const jwt = require('jsonwebtoken');
 const prisma = require('../config/prismaClient');
 
 // Generate JWT tokens
-const generateTokens = (user) => {
-  const accessToken = jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
-    process.env.JWT_ACCESS_SECRET,
-    { expiresIn: '1h' }
-  );
+const generateTokens = (user, extraData = {}) => {
+  const payload = {
+    id: user.id,       // userId
+    email: user.email,
+    role: user.role,
+    ...extraData       // patientId or doctorId
+  };
+
+  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
+    expiresIn: "1h",
+  });
 
   const refreshToken = jwt.sign(
     { id: user.id },
     process.env.JWT_REFRESH_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: "7d" }
   );
 
   return { accessToken, refreshToken };
 };
-
 // 🟢 SIGNUP Controller
 // SIGNUP Controller (Fully Corrected)
 exports.signup = async (req, res) => {
@@ -123,26 +127,46 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: "Invalid credentials" });
 
-    const tokens = generateTokens(user);
+    // Fetch linked doctor / patient ID
+    let linkedIds = {};
+
+    if (user.role === "DOCTOR") {
+      const doctor = await prisma.doctor.findUnique({
+        where: { userId: user.id },
+      });
+      linkedIds.doctorId = doctor?.id;
+    }
+
+    if (user.role === "PATIENT") {
+      const patient = await prisma.patient.findUnique({
+        where: { userId: user.id },
+      });
+      linkedIds.patientId = patient?.id;
+    }
+
+    // Generate tokens with doctorId/patientId inside JWT
+    const tokens = generateTokens(user, linkedIds);
 
     res.status(200).json({
-      message: 'Login successful',
+      message: "Login successful",
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
+        ...linkedIds, // return doctorId or patientId
       },
       ...tokens,
     });
+
   } catch (err) {
-    console.error('Login Error:', err);
+    console.error("Login Error:", err);
     next(err);
   }
 };

@@ -28,10 +28,11 @@ model Doctor {
   appointments   Appointment[]
   prescriptions  Prescription[]
   reports        Report[]
-  doctorPatients DoctorPatient[]   // MANY–TO–MANY via linking table
+  doctorPatients DoctorPatient[]
+  doctorSlots    DoctorSlot[]
   createdAt      DateTime          @default(now())
 
-  user           User              @relation(fields: [userId], references: [id])
+  user           User @relation(fields: [userId], references: [id])
 }
 
 model Patient {
@@ -44,10 +45,10 @@ model Patient {
   appointments   Appointment[]
   prescriptions  Prescription[]
   reports        Report[]
-  doctorPatients DoctorPatient[]   // MANY–TO–MANY via linking table
+  doctorPatients DoctorPatient[]
   createdAt      DateTime          @default(now())
 
-  user           User              @relation(fields: [userId], references: [id])
+  user           User @relation(fields: [userId], references: [id])
 }
 
 model Appointment {
@@ -60,8 +61,9 @@ model Appointment {
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 
-  doctor          Doctor             @relation(fields: [doctorId], references: [id])
-  patient         Patient            @relation(fields: [patientId], references: [id])
+  doctor          Doctor @relation(fields: [doctorId], references: [id])
+  patient         Patient @relation(fields: [patientId], references: [id])
+
   prescription    Prescription?
 }
 
@@ -75,27 +77,13 @@ model Prescription {
   notes          String?
   createdAt      DateTime     @default(now())
 
-  doctor         Doctor       @relation(fields: [doctorId], references: [id])
-  patient        Patient      @relation(fields: [patientId], references: [id])
+  doctor         Doctor @relation(fields: [doctorId], references: [id])
+  patient        Patient @relation(fields: [patientId], references: [id])
   appointment    Appointment? @relation(fields: [appointmentId], references: [id])
-}
-
-model Report {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  patientId   String     @db.ObjectId
-  doctorId    String?    @db.ObjectId
-  fileUrl     String
-  fileType    String
-  description String?
-  uploadedAt  DateTime   @default(now())
-
-  patient     Patient    @relation(fields: [patientId], references: [id])
-  doctor      Doctor?    @relation(fields: [doctorId], references: [id])
 }
 
 model DoctorPatient {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
-
   doctorId   String   @db.ObjectId
   patientId  String   @db.ObjectId
 
@@ -105,6 +93,39 @@ model DoctorPatient {
   createdAt  DateTime @default(now())
 
   @@unique([doctorId, patientId], name: "doctor_patient_unique")
+}
+
+model DoctorSlot {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId      String        @db.ObjectId
+  startTime     DateTime
+  endTime       DateTime
+  duration      Int
+  status        SlotStatus    @default(AVAILABLE)
+  createdAt     DateTime      @default(now())
+
+  doctor        Doctor        @relation(fields: [doctorId], references: [id])
+
+  // IMPORTANT → not unique
+  appointmentId String?       @db.ObjectId
+}
+
+model Report {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId   String   @db.ObjectId
+  patientId  String   @db.ObjectId
+  fileUrl    String
+  notes      String?
+  createdAt  DateTime @default(now())
+
+  doctor     Doctor   @relation(fields: [doctorId], references: [id])
+  patient    Patient  @relation(fields: [patientId], references: [id])
+}
+  
+enum SlotStatus {
+  AVAILABLE
+  BOOKED
+  EXPIRED
 }
 
 enum Role {

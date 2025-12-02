@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "./NavbarDashboard.module.css";
 import Image from "next/image";
-import { Users, Calendar, FileText, Pill, LogOut } from "lucide-react";
+import { Users, Watch, Calendar, FileText, Pill, LogOut } from "lucide-react";
 import { useRouter } from "next/router";
 
 export default function NavbarDoctor() {
@@ -36,6 +36,7 @@ export default function NavbarDoctor() {
         <Link href="/doctor">Dashboard</Link>
         <Link href="/doctor/patients"><Users size={18}/> My Patients</Link>
         <Link href="/doctor/appointments"><Calendar size={18}/> Appointments</Link>
+        <Link href="/doctor/slots"><Watch size={18}/> Slots</Link>
         <Link href="/doctor/prescriptions"><Pill size={18}/> Prescriptions</Link>
         <Link href="/doctor/reports"><FileText size={18}/> Reports</Link>
 

@@ -1,0 +1,236 @@
+/* PAGE WRAPPER */
+.container {
+  padding: 40px 60px;
+  animation: fadeIn 0.4s ease;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* BUTTONS */
+.primary {
+  background: linear-gradient(135deg, #4ca1af, #2c7da0);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(76, 161, 175, 0.3);
+  transition: all 0.25s ease;
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 161, 175, 0.4);
+}
+
+/* TABLE WRAPPER */
+.tableWrap {
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 16px;
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  animation: fadeUp 0.5s ease;
+}
+
+/* TABLE */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+  padding: 14px 10px;
+  border-bottom: 2px solid #eef2f7;
+}
+
+.table td {
+  padding: 14px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 15px;
+  color: #334155;
+}
+
+.table tr:hover {
+  background: #f8fafc;
+  transition: 0.2s ease;
+}
+
+/* BADGES */
+.badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+.available {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+}
+
+.booked {
+  background: linear-gradient(135deg, #3182ce, #2b6cb0);
+}
+
+.expired {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+}
+
+/* ACTION BUTTONS */
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.danger {
+  background: #ffe5e5;
+  color: #b91c1c;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #f8c8c8;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.danger:hover {
+  background: #ffcccc;
+  transform: translateY(-2px);
+}
+
+/* MODAL OVERLAY */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+  z-index: 1000;
+}
+
+/* MODAL */
+.modal {
+  width: 500px;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  overflow: hidden;
+  animation: slideUp 0.4s ease;
+}
+
+/* MODAL HEADER */
+.modalHeader {
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.modalHeader button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* FORM */
+.form {
+  padding: 20px;
+}
+
+.form label {
+  display: block;
+  margin-top: 14px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #475569;
+}
+
+.form input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid #cdd7e1;
+  font-size: 14px;
+}
+
+.form input:focus {
+  border-color: #4ca1af;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 161, 175, 0.25);
+}
+
+/* MODAL FOOTER */
+.modalFooter {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modalFooter button {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.modalFooter button:hover {
+  transform: translateY(-1px);
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .container {
+    padding: 24px;
+  }
+  .modal {
+    width: 92%;
+  }
+}

@@ -20,44 +20,30 @@ exports.getDashboardStats = async (req, res) => {
       return res.status(403).json({ message: "Doctor profile not found" });
     }
 
-    // Count only THIS doctor's patients via linking table
+    // Count patients
     const patientsCount = await prisma.doctorPatient.count({
       where: { doctorId: doctor.id }
     });
 
-    // Count only this doctor's appointments
+    // Count appointments
     const appointmentsCount = await prisma.appointment.count({
       where: { doctorId: doctor.id }
     });
 
-    // Count only prescriptions written by this doctor
-    const prescriptionsCount = await prisma.prescription.count({
+    // Count doctor slots
+    const slotsCount = await prisma.doctorSlot.count({
       where: { doctorId: doctor.id }
     });
 
-    // Count only reports uploaded by this doctor OR belonging to their linked patients
+    // Count reports
     const reportsCount = await prisma.report.count({
-      where: {
-        OR: [
-          { doctorId: doctor.id }, // uploaded by doctor
-          {
-            patientId: {
-              in: (
-                await prisma.doctorPatient.findMany({
-                  where: { doctorId: doctor.id },
-                  select: { patientId: true }
-                })
-              ).map(r => r.patientId)
-            }
-          }
-        ]
-      }
+      where: { doctorId: doctor.id }
     });
 
     return res.json({
       patients: patientsCount,
       appointments: appointmentsCount,
-      prescriptions: prescriptionsCount,
+      slots: slotsCount,
       reports: reportsCount,
     });
 

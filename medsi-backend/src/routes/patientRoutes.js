@@ -1,28 +1,19 @@
 // src/routes/patientRoutes.js
 const express = require('express');
 const router = express.Router();
+
 const {
-  getProfile,
-  updateProfile,
-  listAppointments,
-  bookAppointment,
-  updateAppointment,
-  listPrescriptions,
-  listReports
+  getDashboardStats,
 } = require('../controllers/patientController');
 
 const { verifyToken, checkRole } = require('../middleware/authMiddleware');
 
-// All patient routes require authentication and PATIENT role
-router.get('/profile', verifyToken, checkRole('PATIENT'), getProfile);
-router.put('/profile', verifyToken, checkRole('PATIENT'), updateProfile);
+// All routes require PATIENT authentication ------------------------------
+router.use(verifyToken);
+router.use(checkRole("PATIENT"));
 
-router.get('/appointments', verifyToken, checkRole('PATIENT'), listAppointments);
-router.post('/appointments', verifyToken, checkRole('PATIENT'), bookAppointment);
-router.put('/appointments/:id', verifyToken, checkRole('PATIENT'), updateAppointment);
+/* ------------------ Dashboard ------------------ */
+router.get("/dashboard", getDashboardStats);
 
-router.get('/prescriptions', verifyToken, checkRole('PATIENT'), listPrescriptions);
-
-router.get('/reports', verifyToken, checkRole('PATIENT'), listReports);
 
 module.exports = router;

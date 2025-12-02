@@ -1,6 +1,6 @@
 import NavbarDoctor from "../../components/Dashboard/NavbarDoctor";
 import DashboardCard from "../../components/Dashboard/DashboardCard";
-import { Users, Calendar, Pill, FileText } from "lucide-react";
+import { Users, Calendar, Pill, FileText, Watch } from "lucide-react";
 import styles from "../../styles/DoctorDashboard.module.css";
 import { requireAuth } from "../../utils/protectedRoute";
 import API from "../../api/axiosInstance";
@@ -10,7 +10,7 @@ export default function DoctorDashboard({ user }) {
   const [stats, setStats] = useState({
     patients: 0,
     appointments: 0,
-    prescriptions: 0,
+    slots: 0,
     reports: 0,
   });
 
@@ -61,10 +61,10 @@ export default function DoctorDashboard({ user }) {
           />
 
           <DashboardCard
-            title="Prescriptions"
-            value={stats.prescriptions}
-            desc="Issued prescriptions"
-            icon={<Pill size={34} />}
+            title="My Slots"
+            value={stats.slots}
+            desc="Available & booked slots"
+            icon={<Watch size={34} />}
             theme="blue"
           />
 
@@ -76,6 +76,7 @@ export default function DoctorDashboard({ user }) {
             theme="purple"
           />
         </div>
+
       </div>
     </>
   );
