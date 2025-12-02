@@ -7,9 +7,7 @@ const prisma = new PrismaClient();
 exports.getDoctors = async (req, res) => {
     try {
         const doctors = await prisma.doctor.findMany({
-            include: {
-                user: true,
-            },
+            include: { user: true },
         });
 
         return res.json({ doctors });
@@ -25,8 +23,6 @@ exports.getDoctors = async (req, res) => {
 exports.getDoctorSlots = async (req, res) => {
     try {
         const { doctorId } = req.params;
-        const allSlot = await prisma.doctorSlot.findMany();
-        console.log("All slots in DB:", allSlot);
 
         const slots = await prisma.doctorSlot.findMany({
             where: {
@@ -35,19 +31,9 @@ exports.getDoctorSlots = async (req, res) => {
             },
             orderBy: { startTime: "asc" },
             include: {
-                doctor: {
-                    include: { user: true },
-                },
+                doctor: { include: { user: true } },
             },
         });
-
-        console.log("Requested doctorId:", doctorId);
-        console.log("Requested doctorId:", doctorId, typeof doctorId);
-
-        const allSlots = await prisma.doctorSlot.findMany({
-            where: { doctorId },
-        });
-        console.log("All slots for doctor:", allSlots);
 
         return res.json({ slots });
     } catch (err) {
@@ -62,13 +48,21 @@ exports.getDoctorSlots = async (req, res) => {
 exports.bookAppointment = async (req, res) => {
     try {
         const { doctorId, slotId, reason } = req.body;
-        const patientId = req.user.patientId;
 
-        if (!doctorId || !slotId || !patientId) {
+        if (!doctorId || !slotId) {
             return res.status(400).json({ message: "Missing fields" });
         }
 
-        // Get slot info (so we know appointmentDate)
+        // ✔ Fetch the logged-in patient's record using userId from JWT
+        const patient = await prisma.patient.findUnique({
+            where: { userId: req.user.id }
+        });
+
+        if (!patient) {
+            return res.status(400).json({ message: "Patient profile not found" });
+        }
+
+        // ✔ Check slot availability
         const slot = await prisma.doctorSlot.findUnique({
             where: { id: slotId }
         });
@@ -77,20 +71,20 @@ exports.bookAppointment = async (req, res) => {
             return res.status(400).json({ message: "Slot not available" });
         }
 
-        // Create appointment WITHOUT nested relation
+        // ✔ Create appointment correctly
         const appointment = await prisma.appointment.create({
             data: {
                 doctorId,
-                patientId,
-                appointmentDate: slot.startTime,  // important!
+                patientId: patient.id,     // ✔ correct patient ID
+                appointmentDate: slot.startTime,
                 reason: reason || "",
                 doctorSlot: {
                     connect: { id: slotId }
-                }             // correct relation
+                }
             }
         });
 
-        // Mark slot as booked
+        // ✔ Mark slot as booked
         await prisma.doctorSlot.update({
             where: { id: slotId },
             data: { status: "BOOKED" }

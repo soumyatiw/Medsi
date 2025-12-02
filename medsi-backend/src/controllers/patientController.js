@@ -39,3 +39,36 @@ exports.getDashboardStats = async (req, res) => {
     return res.status(500).json({ message: "Failed to load dashboard stats" });
   }
 };
+
+
+exports.listAppointments = async (req, res) => {
+  try {
+    // STEP 1 — Find patient by userId
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id }
+    });
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient profile not found" });
+    }
+
+    // STEP 2 — Fetch appointments using patient.id
+    const appointments = await prisma.appointment.findMany({
+      where: { patientId: patient.id },
+      include: {
+        doctor: {
+          include: { user: true }
+        },
+        doctorSlot: true
+      },
+      orderBy: { appointmentDate: "asc" }
+    });
+
+    return res.json({ appointments });
+
+  } catch (error) {
+    console.error("listAppointments error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+

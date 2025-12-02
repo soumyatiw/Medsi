@@ -4,6 +4,7 @@ const router = express.Router();
 
 const {
   getDashboardStats,
+  listAppointments
 } = require('../controllers/patientController');
 
 const { verifyToken, checkRole } = require('../middleware/authMiddleware');
@@ -14,6 +15,10 @@ router.use(checkRole("PATIENT"));
 
 /* ------------------ Dashboard ------------------ */
 router.get("/dashboard", getDashboardStats);
+router.get(
+  "/appointments",
+  listAppointments
+);
 
 
 module.exports = router;

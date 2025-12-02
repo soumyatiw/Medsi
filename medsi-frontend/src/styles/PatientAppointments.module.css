@@ -1,0 +1,122 @@
+/* src/styles/PatientAppointments.module.css */
+
+.container {
+  padding: 32px 48px;
+  min-height: 80vh;
+}
+
+/* Header */
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:18px;
+}
+.title { margin:0; font-size:24px; color:#0f172a; font-weight:700; }
+.subtitle { margin:0; color:#64748b; font-size:13px; margin-top:6px; }
+
+/* Header actions */
+.headerActions { display:flex; gap:10px; align-items:center; }
+.primaryBtn {
+  background:linear-gradient(90deg,#4ca1af,#2b9aa0);
+  color:white;
+  padding:10px 14px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:600;
+}
+.ghostBtn {
+  background:transparent;
+  border:1px solid #e6eef8;
+  color:#334155;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* Empty / Loading / Error */
+.empty {
+  padding:28px;
+  background:#fff;
+  border-radius:10px;
+  text-align:center;
+  color:#64748b;
+  box-shadow:0 6px 18px rgba(2,6,23,0.04);
+}
+.error {
+  padding:16px;
+  background:#fff6f6;
+  color:#9b1c1c;
+  border-radius:8px;
+  border:1px solid #ffd7d7;
+}
+
+/* Appointments list */
+.list { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+
+/* Card */
+.card {
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 8px 24px rgba(2,6,23,0.04);
+}
+.cardLeft { width:220px; min-width:160px; }
+.date { font-weight:700; color:#0f172a; }
+.doctor { color:#334155; margin-top:6px; font-weight:600; }
+.meta { color:#94a3b8; font-size:13px; margin-top:6px; }
+
+/* Middle */
+.cardMiddle { flex:1; }
+.reason { color:#334155; margin-bottom:8px; }
+.statusRow { display:flex; gap:10px; align-items:center; margin-bottom:8px; }
+.badge {
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:700;
+  color:white;
+  font-size:12px;
+}
+.upcoming { background:#059669; } /* green */
+.completed { background:#2563eb; } /* blue */
+.cancelled { background:#ef4444; } /* red */
+
+.slotInfo { color:#475569; font-size:13px; background:#f8fafc; padding:6px 8px; border-radius:8px; }
+
+/* small inline links */
+.links { display:flex; gap:12px; margin-top:8px; }
+.linkInline {
+  color:#2563eb;
+  text-decoration:underline;
+  font-weight:600;
+}
+
+/* Right area */
+.cardRight { display:flex; flex-direction:column; gap:8px; align-items:flex-end; min-width:140px; }
+.cancelBtn {
+  background:#fff0f0;
+  border:1px solid #ffd7d7;
+  color:#b71c1c;
+  padding:8px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.viewBtn {
+  text-decoration:none;
+  padding:8px 10px;
+  border-radius:8px;
+  background:#eef2ff;
+  color:#1e3a8a;
+  font-weight:600;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .card { flex-direction:column; align-items:flex-start; }
+  .cardLeft { width:100%; min-width:auto; }
+  .cardRight { width:100%; flex-direction:row; justify-content:space-between; margin-top:8px; }
+}
