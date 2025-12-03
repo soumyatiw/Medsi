@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------
-   PATIENT APPOINTMENTS — PREMIUM TEAL THEME
+   PATIENT APPOINTMENTS — PREMIUM TEAL THEME (FINAL)
 --------------------------------------------------------- */
 
 /* PAGE WRAPPER */
@@ -81,7 +81,7 @@
 }
 
 /* ---------------------------------------------------------
-   APPOINTMENT CARD — PREMIUM
+   APPOINTMENT CARD
 --------------------------------------------------------- */
 .card {
   display: flex;
@@ -92,12 +92,6 @@
   border: 1px solid #ecf6f7;
   box-shadow: 0 8px 22px rgba(0,0,0,0.04);
   animation: fadeUp 0.35s ease;
-}
-
-/* Gradient left strip */
-.cardLeftStrip {
-  width: 8px;
-  background: linear-gradient(180deg, #4ca1af, #2c7da0);
 }
 
 /* LEFT SECTION */
@@ -143,7 +137,6 @@
   gap: 10px;
 }
 
-/* STATUS BADGES */
 .badge {
   padding: 5px 12px;
   border-radius: 20px;
@@ -168,7 +161,6 @@
   color: #b91c1c;
 }
 
-/* slot info */
 .slotInfo {
   padding: 4px 10px;
   background: #f1f9fa;
@@ -183,57 +175,65 @@
   padding: 16px 20px;
   width: 28%;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
+  justify-content: end;
+  gap: 10px; /* FIXED BUTTON SPACING */
+  align-items: center;
 }
 
-/* ACTION BUTTONS */
+/* ---------------------------------------------------------
+   FIXED ACTION BUTTONS (Cancel + Delete)
+--------------------------------------------------------- */
+
+/* CANCEL BUTTON */
 .cancelBtn {
   background: #fff5f5;
-  border: 1px solid #e4b4b4;
-  padding: 7px 14px;
-  border-radius: 10px;
+  border: 1px solid #f4b4b4;
+  padding: 6px 14px;
+  border-radius: 12px;
   color: #c53030;
   font-size: 13px;
   cursor: pointer;
   font-weight: 600;
+  transition: 0.2s ease;
+  box-shadow: 0 2px 6px rgba(255,0,0,0.06);
 }
 
 .cancelBtn:hover {
-  background: #ffe5e5;
+  background: #ffe3e3;
+  border-color: #e08a8a;
+  transform: translateY(-1px);
 }
 
-.deleteBtn {
-  background: #ffefef;
-  border: 1px solid #e09191;
-  padding: 7px 14px;
-  border-radius: 10px;
+/* DELETE ICON BUTTON (BIN) */
+.deleteIconBtn {
+  background: #ffecec;
+  border: 1px solid #e89a9a;
+  padding: 6px 12px;
+  border-radius: 12px;
   color: #b91c1c;
-  font-size: 13px;
   cursor: pointer;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+  box-shadow: 0 2px 6px rgba(255,0,0,0.05);
 }
 
-.deleteBtn:hover {
-  background: #ffdcdc;
+.deleteIconBtn:hover {
+  background: #ffd7d7;
+  border-color: #d77474;
+  transform: translateY(-1px) scale(1.05);
 }
 
-.viewBtn {
-  background: #eef6f7;
-  padding: 7px 14px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #2c7da0;
-  font-size: 13px;
-  font-weight: 600;
+.deleteIconBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.viewBtn:hover {
-  background: #dff1f3;
-}
-
-/* EMPTY & ERROR STATES */
+/* ---------------------------------------------------------
+   OTHER
+--------------------------------------------------------- */
 .empty {
   padding: 40px 0;
   text-align: center;
@@ -249,16 +249,13 @@
   border-radius: 12px;
 }
 
-/* LINKS */
 .linkInline {
   color: #2c7da0;
   font-weight: 600;
   text-decoration: underline;
 }
 
-/* ---------------------------------------------------------
-   ANIMATIONS
---------------------------------------------------------- */
+/* ANIMATIONS */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
@@ -269,9 +266,7 @@
   to { opacity: 1; }
 }
 
-/* ---------------------------------------------------------
-   RESPONSIVE DESIGN
---------------------------------------------------------- */
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .card {
     flex-direction: column;

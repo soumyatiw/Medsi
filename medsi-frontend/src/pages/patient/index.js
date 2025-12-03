@@ -180,12 +180,6 @@ export default function PatientDashboard({ user }) {
                     <Link href="/patient/appointments" className={styles.nextBtn}>
                       View All Appointments
                     </Link>
-                    <a
-                      className={styles.secondaryBtn}
-                      href={`/patient/appointments/${nextAppointment.id}`}
-                    >
-                      View Details
-                    </a>
                   </div>
                 </div>
               ) : (

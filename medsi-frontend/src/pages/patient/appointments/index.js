@@ -6,13 +6,16 @@ import styles from "../../../styles/PatientAppointments.module.css";
 import { requireAuth } from "../../../utils/protectedRoute";
 import Link from "next/link";
 
+// ICON
+import { Trash2 } from "lucide-react";
+
 export default function PatientAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(null); // appointment ID in progress
+  const [actionLoading, setActionLoading] = useState(null);
   const [error, setError] = useState(null);
 
-  /* ---------------- Fetch appointments ---------------- */
+  /* Fetch appointments */
   const fetchAppointments = async () => {
     setLoading(true);
     setError(null);
@@ -34,7 +37,7 @@ export default function PatientAppointments() {
     fetchAppointments();
   }, []);
 
-  /* ---------------- Cancel appointment ---------------- */
+  /* Cancel appointment */
   const cancelAppointment = async (appt) => {
     const confirmCancel = confirm(
       `Cancel appointment on ${new Date(
@@ -60,7 +63,7 @@ export default function PatientAppointments() {
     }
   };
 
-  /* ---------------- Delete appointment ---------------- */
+  /* Delete appointment */
   const deleteAppointment = async (appt) => {
     const confirmDelete = confirm(
       `Permanently delete appointment on ${new Date(
@@ -183,18 +186,15 @@ export default function PatientAppointments() {
                     </button>
                   )}
 
-                  {/* DELETE BUTTON */}
+                  {/* ICON DELETE BUTTON */}
                   <button
-                    className={styles.deleteBtn}
+                    className={styles.deleteIconBtn}
                     onClick={() => deleteAppointment(a)}
                     disabled={actionLoading === a.id}
+                    title="Delete Appointment"
                   >
-                    {actionLoading === a.id ? "Deleting…" : "Delete"}
+                    {actionLoading === a.id ? "…" : <Trash2 size={18} />}
                   </button>
-
-                  <Link href={`/patient/appointments/${a.id}`} className={styles.viewBtn}>
-                    Details
-                  </Link>
                 </div>
               </div>
             ))}

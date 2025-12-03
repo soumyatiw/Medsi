@@ -597,29 +597,28 @@ exports.getSingleAppointment = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const appointment = await prisma.appointment.findUnique({
+    // Step 1 — fetch appointment WITHOUT doctorSlot
+    const appt = await prisma.appointment.findUnique({
       where: { id },
       include: {
-        patient: {
-          include: {
-            user: true
-          }
-        },
-        doctor: {
-          include: {
-            user: true
-          }
-        },
-        prescription: true,
-        doctorSlot: true
+        patient: { include: { user: true } },
+        doctor: { include: { user: true } },
+        prescription: true
       }
     });
 
-    if (!appointment) {
+    if (!appt)
       return res.status(404).json({ message: "Appointment not found" });
-    }
 
-    return res.json({ appointment });
+    // Step 2 — Manually fetch doctorSlot
+    const slot = await prisma.doctorSlot.findFirst({
+      where: { appointmentId: appt.id }
+    });
+
+    return res.json({
+      appointment: { ...appt, doctorSlot: slot }
+    });
+
   } catch (err) {
     console.error("getSingleAppointment error:", err);
     return res.status(500).json({ message: "Server error" });
