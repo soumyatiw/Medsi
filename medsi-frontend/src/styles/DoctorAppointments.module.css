@@ -170,6 +170,21 @@
   border-color: #4ca1af;
 }
 
+.prescriptionBtn {
+  background: #4a6cf7;
+  color: white !important;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-right: 8px;
+  font-size: 13px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.prescriptionBtn:hover {
+  background: #3b57d6;
+}
+
 /* ---------------------------------------------------------
    ANIMATIONS
 --------------------------------------------------------- */

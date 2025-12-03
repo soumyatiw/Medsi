@@ -29,6 +29,11 @@ router.put("/patients/:id", doctorController.updatePatient);
 router.delete("/patients/:id", doctorController.deletePatient);
 
 
+router.post(
+  "/appointments/:appointmentId/prescription",
+  doctorController.addOrUpdatePrescription // OR addOrUpdatePrescription if you exported separately
+);
+
 /* ------------------ Appointment Routes ------------------ */
 
 // Get appointments (with filters & pagination)
@@ -36,5 +41,7 @@ router.get("/appointments", doctorController.getAppointments);
 router.delete("/appointments/:id", doctorController.deleteAppointment);
 // Update appointment status
 router.put("/appointments/:id/status", doctorController.updateAppointmentStatus);
+
+router.get("/appointments/:id", doctorController.getSingleAppointment);
 
 module.exports = router;

@@ -6,7 +6,9 @@ const {
   getDashboardStats,
   listAppointments,
   updateAppointment,
-  deleteAppointment
+  deleteAppointment,
+  getPatientPrescriptions,
+  getPatientPrescriptionById
 } = require('../controllers/patientController');
 
 const { verifyToken, checkRole } = require('../middleware/authMiddleware');
@@ -22,5 +24,12 @@ router.get("/dashboard", getDashboardStats);
 router.get("/appointments", listAppointments);
 router.put("/appointments/:id", updateAppointment);
 router.delete("/appointments/:id", deleteAppointment);
+
+
+
+// listing is protected by the router.use verifyToken & checkRole
+router.get("/prescriptions", getPatientPrescriptions);
+router.get("/prescriptions/:id", getPatientPrescriptionById);
+
 
 module.exports = router;

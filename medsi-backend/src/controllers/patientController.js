@@ -175,3 +175,55 @@ exports.deleteAppointment = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+
+exports.getPatientPrescriptions = async (req, res) => {
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id }
+    });
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+
+    const prescriptions = await prisma.prescription.findMany({
+      where: { patientId: patient.id },
+      include: {
+        doctor: { include: { user: true } },
+        appointment: true
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    return res.json({ prescriptions });
+  } catch (err) {
+    console.error("getPatientPrescriptions error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/**
+ * GET /api/patient/prescriptions/:id
+ * Get single prescription (patient only)
+ */
+exports.getPatientPrescriptionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id }
+    });
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+
+    const prescription = await prisma.prescription.findFirst({
+      where: { id, patientId: patient.id },
+      include: {
+        doctor: { include: { user: true } },
+        appointment: true
+      }
+    });
+    if (!prescription) return res.status(404).json({ message: "Prescription not found" });
+
+    return res.json({ prescription });
+  } catch (err) {
+    console.error("getPatientPrescriptionById error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

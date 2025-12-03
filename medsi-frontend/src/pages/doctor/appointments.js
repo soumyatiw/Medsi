@@ -1,7 +1,10 @@
+// src/pages/doctor/appointments.js
+
 import { useEffect, useState, useCallback } from "react";
 import NavbarDoctor from "../../components/Dashboard/NavbarDoctor";
 import styles from "../../styles/DoctorAppointments.module.css";
 import API from "../../api/axiosInstance";
+import Link from "next/link";
 import { requireAuth } from "../../utils/protectedRoute";
 
 export default function DoctorAppointments() {
@@ -16,12 +19,12 @@ export default function DoctorAppointments() {
   /* ---------------- FETCH APPOINTMENTS ---------------- */
   const fetchAppointments = useCallback(async (opts = {}) => {
     setLoading(true);
-    const p = opts.page ?? page;
+    const currentPage = opts.page ?? page;
 
     try {
       const res = await API.get("/api/doctor/appointments", {
         params: {
-          page: p,
+          page: currentPage,
           limit: 10,
           status,
           search,
@@ -70,14 +73,18 @@ export default function DoctorAppointments() {
       <NavbarDoctor />
 
       <div className={styles.container}>
-        <h2>Appointments</h2>
+        <h2 className={styles.title}>Appointments</h2>
 
+        {/* FILTERS */}
         <div className={styles.filters}>
-          <select value={status} onChange={(e) => {
-            setStatus(e.target.value);
-            setPage(1);
-            fetchAppointments({ page: 1 });
-          }}>
+          <select
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value);
+              setPage(1);
+              fetchAppointments({ page: 1 });
+            }}
+          >
             <option value="">All Status</option>
             <option value="UPCOMING">Upcoming</option>
             <option value="COMPLETED">Completed</option>
@@ -114,34 +121,52 @@ export default function DoctorAppointments() {
                 <tr><td colSpan="6">Loading...</td></tr>
               ) : appointments.length === 0 ? (
                 <tr><td colSpan="6">No appointments</td></tr>
-              ) : appointments.map((a) => (
-                <tr key={a.id}>
-                  <td>{a.patient?.user?.name}</td>
-                  <td>{a.patient?.user?.email}</td>
-                  <td>{new Date(a.appointmentDate).toLocaleString()}</td>
-                  <td>
-                    <span className={`${styles.status} ${styles[a.status.toLowerCase()]}`}>
-                      {a.status}
-                    </span>
-                  </td>
-                  <td>{a.reason || "-"}</td>
+              ) : (
+                appointments.map((a) => (
+                  <tr key={a.id}>
+                    <td>{a.patient?.user?.name}</td>
+                    <td>{a.patient?.user?.email}</td>
 
-                  <td className={styles.actions}>
-                    <select
-                      value={a.status}
-                      onChange={(e) => updateStatus(a.id, e.target.value)}
-                    >
-                      <option value="UPCOMING">UPCOMING</option>
-                      <option value="COMPLETED">COMPLETED</option>
-                      <option value="CANCELLED">CANCELLED</option>
-                    </select>
+                    <td>{new Date(a.appointmentDate).toLocaleString()}</td>
 
-                    <button className={styles.delete} onClick={() => deleteAppointment(a.id)}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    {/* STATUS */}
+                    <td>
+                      <span className={`${styles.status} ${styles[a.status.toLowerCase()]}`}>
+                        {a.status}
+                      </span>
+                    </td>
+
+                    <td>{a.reason || "-"}</td>
+
+                    <td className={styles.actions}>
+                      {/* ADD PRESCRIPTION BUTTON */}
+                      {(a.status === "UPCOMING" || a.status === "COMPLETED") && (
+                        <Link
+                          href={`/doctor/appointments/${a.id}`}
+                          className={styles.prescriptionBtn}
+                        >
+                          Add Prescription
+                        </Link>
+                      )}
+
+                      {/* STATUS DROPDOWN */}
+                      <select
+                        value={a.status}
+                        onChange={(e) => updateStatus(a.id, e.target.value)}
+                      >
+                        <option value="UPCOMING">UPCOMING</option>
+                        <option value="COMPLETED">COMPLETED</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                      </select>
+
+                      {/* DELETE */}
+                      <button className={styles.delete} onClick={() => deleteAppointment(a.id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
 
           </table>
@@ -149,17 +174,27 @@ export default function DoctorAppointments() {
 
         {/* PAGINATION */}
         <div className={styles.pagination}>
-          <button disabled={page <= 1} onClick={() => {
-            setPage(page - 1);
-            fetchAppointments({ page: page - 1 });
-          }}>Prev</button>
+          <button
+            disabled={page <= 1}
+            onClick={() => {
+              setPage(page - 1);
+              fetchAppointments({ page: page - 1 });
+            }}
+          >
+            Prev
+          </button>
 
           <span>Page {meta.page} of {meta.totalPages}</span>
 
-          <button disabled={page >= meta.totalPages} onClick={() => {
-            setPage(page + 1);
-            fetchAppointments({ page: page + 1 });
-          }}>Next</button>
+          <button
+            disabled={page >= meta.totalPages}
+            onClick={() => {
+              setPage(page + 1);
+              fetchAppointments({ page: page + 1 });
+            }}
+          >
+            Next
+          </button>
         </div>
       </div>
     </>

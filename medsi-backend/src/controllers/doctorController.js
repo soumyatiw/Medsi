@@ -506,3 +506,100 @@ exports.deleteAppointment = async (req, res) => {
     res.status(500).json({ message: "Failed to delete appointment" });
   }
 };
+
+/* ---------------------------------------------------------*/
+exports.addOrUpdatePrescription = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { diagnosis, medicines, notes } = req.body;
+
+    if (!diagnosis || (!medicines || medicines.length === 0)) {
+      return res.status(400).json({ message: "Diagnosis and medicines are required" });
+    }
+
+    // Find doctor profile for logged-in user
+    const doctor = await prisma.doctor.findUnique({
+      where: { userId: req.user.id }
+    });
+    if (!doctor) return res.status(403).json({ message: "Doctor profile not found" });
+
+    // Find appointment and ensure doctor owns it
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: appointmentId }
+    });
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+    if (appointment.doctorId !== doctor.id) {
+      return res.status(403).json({ message: "You are not allowed to add prescription to this appointment" });
+    }
+
+    // Normalize medicines: accept array or comma-separated string
+    let meds = medicines;
+    if (!Array.isArray(meds)) {
+      // If a string like "Paracetamol - 500mg, Vitamin C" => convert to array
+      if (typeof meds === "string") {
+        meds = meds.split(",").map((m) => m.trim()).filter(Boolean);
+      } else {
+        meds = [];
+      }
+    }
+
+    // Upsert by appointmentId (appointmentId is unique in Prescription model)
+    const prescription = await prisma.prescription.upsert({
+      where: { appointmentId },
+      update: {
+        diagnosis,
+        medicines: meds,
+        notes: notes ?? null,
+        doctorId: doctor.id,
+        patientId: appointment.patientId,
+      },
+      create: {
+        appointmentId,
+        diagnosis,
+        medicines: meds,
+        notes: notes ?? null,
+        doctorId: doctor.id,
+        patientId: appointment.patientId,
+      },
+    });
+
+    return res.json({ message: "Prescription saved", prescription });
+  } catch (err) {
+    console.error("addOrUpdatePrescription error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+exports.getSingleAppointment = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const appointment = await prisma.appointment.findUnique({
+      where: { id },
+      include: {
+        patient: {
+          include: {
+            user: true
+          }
+        },
+        doctor: {
+          include: {
+            user: true
+          }
+        },
+        prescription: true,
+        doctorSlot: true
+      }
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    return res.json({ appointment });
+  } catch (err) {
+    console.error("getSingleAppointment error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
