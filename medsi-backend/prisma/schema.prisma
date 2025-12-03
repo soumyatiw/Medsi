@@ -63,7 +63,6 @@ model Appointment {
 
   doctor          Doctor @relation(fields: [doctorId], references: [id])
   patient         Patient @relation(fields: [patientId], references: [id])
-
   prescription    Prescription?
 }
 
@@ -106,7 +105,6 @@ model DoctorSlot {
 
   doctor        Doctor        @relation(fields: [doctorId], references: [id])
 
-  // IMPORTANT → not unique
   appointmentId String?       @db.ObjectId
 }
 

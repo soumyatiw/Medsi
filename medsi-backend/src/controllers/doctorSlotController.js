@@ -39,24 +39,36 @@ exports.createSlot = async (req, res) => {
 };
 
 /* -----------------------------------------------------
-   GET ALL SLOTS (including booked)
+   GET ALL SLOTS (with appointment manually attached)
 ----------------------------------------------------- */
 exports.getSlots = async (req, res) => {
   try {
     const doctor = await getDoctor(req.user.id);
     if (!doctor) return res.status(403).json({ message: "Doctor not found" });
 
-    const slots = await prisma.doctorSlot.findMany({
+    // 1) Fetch slots WITHOUT relations
+    const rawSlots = await prisma.doctorSlot.findMany({
       where: { doctorId: doctor.id },
       orderBy: { startTime: "asc" },
-      include: {
-        appointment: {
-          include: {
-            patient: { include: { user: true } },
-          },
-        },
-      },
     });
+
+    // 2) Manually add appointment (safe on Render)
+    const slots = await Promise.all(
+      rawSlots.map(async (slot) => {
+        if (!slot.appointmentId) return { ...slot, appointment: null };
+
+        const appt = await prisma.appointment.findUnique({
+          where: { id: slot.appointmentId },
+          include: {
+            patient: {
+              include: { user: true }
+            }
+          }
+        });
+
+        return { ...slot, appointment: appt };
+      })
+    );
 
     res.json({ slots });
   } catch (err) {
@@ -92,7 +104,7 @@ exports.getAvailableSlots = async (req, res) => {
 };
 
 /* -----------------------------------------------------
-   DELETE SLOT (only if not booked)
+   DELETE SLOT (even if booked → FIXED)
 ----------------------------------------------------- */
 exports.deleteSlot = async (req, res) => {
   try {
@@ -103,15 +115,18 @@ exports.deleteSlot = async (req, res) => {
 
     const slot = await prisma.doctorSlot.findUnique({
       where: { id: slotId },
-      include: { appointment: true },
     });
 
     if (!slot) return res.status(404).json({ message: "Slot not found" });
     if (slot.doctorId !== doctor.id)
       return res.status(403).json({ message: "Not your slot" });
 
-    if (slot.appointmentId)
-      return res.status(400).json({ message: "Cannot delete a booked slot" });
+    // If slot is booked → free appointment & delete slot
+    if (slot.appointmentId) {
+      await prisma.appointment.delete({
+        where: { id: slot.appointmentId }
+      });
+    }
 
     await prisma.doctorSlot.delete({ where: { id: slotId } });
 
@@ -123,7 +138,7 @@ exports.deleteSlot = async (req, res) => {
 };
 
 /* -----------------------------------------------------
-   AUTO EXPIRE SLOTS (run on every GET)
+   AUTO EXPIRE SLOTS
 ----------------------------------------------------- */
 exports.expireOldSlots = async () => {
   const now = new Date();

@@ -82,24 +82,45 @@ exports.getDashboardStats = async (req, res) => {
 ---------------------------------------------------------------*/
 exports.listAppointments = async (req, res) => {
   try {
+    // STEP 1 — ensure patient exists
     const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.id },
+      where: { userId: req.user.id }
     });
 
     if (!patient) {
       return res.status(404).json({ message: "Patient profile not found" });
     }
 
-    const appointments = await prisma.appointment.findMany({
+    // STEP 2 — fetch appointments WITHOUT doctorSlot
+    const appts = await prisma.appointment.findMany({
       where: { patientId: patient.id },
       include: {
-        doctor: { include: { user: true } },
-        doctorSlot: true,
+        doctor: {
+          include: { user: true }
+        },
+        prescription: true
       },
-      orderBy: { appointmentDate: "asc" },
+      orderBy: { appointmentDate: "asc" }
     });
 
+    // STEP 3 — manually attach doctorSlot (Render friendly)
+    const appointments = await Promise.all(
+      appts.map(async (appt) => {
+        let slot = null;
+
+        // Find slot manually using appointmentId
+        if (appt.id) {
+          slot = await prisma.doctorSlot.findFirst({
+            where: { appointmentId: appt.id }
+          });
+        }
+
+        return { ...appt, doctorSlot: slot };
+      })
+    );
+
     return res.json({ appointments });
+
   } catch (error) {
     console.error("listAppointments error:", error);
     return res.status(500).json({ message: "Server error" });
