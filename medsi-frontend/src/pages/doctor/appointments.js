@@ -139,15 +139,7 @@ export default function DoctorAppointments() {
                     <td>{a.reason || "-"}</td>
 
                     <td className={styles.actions}>
-                      {/* ADD PRESCRIPTION BUTTON */}
-                      {(a.status === "UPCOMING" || a.status === "COMPLETED") && (
-                        <Link
-                          href={`/doctor/appointments/${a.id}`}
-                          className={styles.prescriptionBtn}
-                        >
-                          Add Prescription
-                        </Link>
-                      )}
+                      
 
                       {/* STATUS DROPDOWN */}
                       <select
@@ -163,6 +155,16 @@ export default function DoctorAppointments() {
                       <button className={styles.delete} onClick={() => deleteAppointment(a.id)}>
                         Delete
                       </button>
+
+                      {/* ADD PRESCRIPTION BUTTON */}
+                      {(a.status === "UPCOMING" || a.status === "COMPLETED") && (
+                        <Link
+                          href={`/doctor/appointments/${a.id}`}
+                          className={styles.prescriptionBtn}
+                        >
+                          Add Prescription
+                        </Link>
+                      )}
                     </td>
                   </tr>
                 ))

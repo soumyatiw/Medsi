@@ -2,63 +2,60 @@
    PAGE LAYOUT
 --------------------------------------------------------- */
 .container {
-  padding: 32px 60px;
-  animation: fadeIn 0.3s ease;
-}
-
-.container h2{
-  font-size: 28px;
-  padding-bottom: 20px;
+  padding: 40px 60px;
+  animation: fadeIn 0.35s ease;
 }
 
 .title {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 18px;
+  color: #1a1f36;
+  margin-bottom: 22px;
+  letter-spacing: -0.5px;
 }
 
 /* ---------------------------------------------------------
-   FILTER BAR
+   FILTER BAR — Glassmorphism
 --------------------------------------------------------- */
 .filters {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-  background: #ffffff;
-  padding: 14px 20px;
-  border-radius: 14px;
-  border: 1px solid #e5eaf1;
-  box-shadow: 0px 8px 24px rgba(0,0,0,0.05);
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 16px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(76, 161, 175, 0.25); /* Teal border tint */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+  backdrop-filter: blur(10px);
 }
 
 .filters input,
 .filters select {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #cfd8e3;
-  font-size: 14px;
-  background: #f7fafc;
-  transition: 0.2s ease;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #c7e3e8; /* Teal soft border */
+  background: #f6fcfd;
+  font-size: 15px;
+  transition: all 0.25s ease;
+  outline: none;
 }
 
 .filters input:focus,
 .filters select:focus {
-  border-color: #4ca1af;
-  box-shadow: 0 0 5px rgba(76,161,175,0.4);
+  border-color: #2c7da0;
+  box-shadow: 0 0 8px rgba(44, 125, 160, 0.35);
 }
 
 /* ---------------------------------------------------------
-   TABLE WRAPPER
+   TABLE WRAPPER — Neumorphic Card
 --------------------------------------------------------- */
 .tableWrap {
-  margin-top: 20px;
-  background: white;
-  border-radius: 14px;
-  padding: 14px;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
-  border: 1px solid #e8edf3;
+  margin-top: 26px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 
+    0 10px 30px rgba(0,0,0,0.05),
+    0 0 0 1px #e3f3f5;
 }
 
 .table {
@@ -67,46 +64,45 @@
 }
 
 .table th {
-  background: #f9fbff;
-  padding: 14px;
+  padding: 15px 12px;
+  font-size: 14px;
   font-weight: 700;
   color: #475569;
-  font-size: 14px;
-  border-bottom: 2px solid #eef2f8;
-  text-align: left;
+  background: #f4fafd;
+  border-bottom: 2px solid #dff3f7;
 }
 
 .table td {
-  padding: 14px;
-  font-size: 14px;
-  color: #334155;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 15px 12px;
+  font-size: 15px;
+  color: #2d3748;
+  border-bottom: 1px solid #edf7f9;
 }
 
 /* ---------------------------------------------------------
-   BADGE STYLES
+   STATUS BADGES
 --------------------------------------------------------- */
 .status {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 .upcoming {
-  background: #e0f7fa;
-  color: #007b83;
+  background: #dff2ff;
+  color: #0066aa;
 }
 
 .completed {
-  background: #e6ffed;
-  color: #2f855a;
+  background: #e7ffe9;
+  color: #1c7c42;
 }
 
 .cancelled {
-  background: #ffe6e6;
-  color: #c53030;
+  background: #ffe7e7;
+  color: #b30000;
 }
 
 /* ---------------------------------------------------------
@@ -114,82 +110,85 @@
 --------------------------------------------------------- */
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  align-items: center;
 }
 
-.actionBtn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #dce4ee;
-  cursor: pointer;
-  background: #ffffff;
-  transition: 0.2s;
+/* Prescription Button — Teal Gradient */
+.prescriptionBtn {
+  background: linear-gradient(135deg, #4ca1af, #2c7da0);
+  color: white !important;
+  padding: 7px 14px;
   font-size: 13px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.25s ease;
 }
 
-.actionBtn:hover {
-  background: #f1f9ff;
-  border-color: #4ca1af;
-  color: #4ca1af;
+.prescriptionBtn:hover {
+  background: linear-gradient(135deg, #3e8e9a, #23647e);
+  transform: translateY(-2px);
 }
 
+/* Dropdown status */
+.actions select {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #cce9ee;
+  background: #f3fbfc;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.actions select:hover {
+  border-color: #2c7da0;
+}
+
+/* Delete button */
 .delete {
-  background: #ffecec;
-  color: #b40000 !important;
+  padding: 7px 12px;
+  border-radius: 10px;
   border: 1px solid #ffcccc;
+  background: #ffecec;
+  color: #c00000 !important;
+  font-size: 13px;
+  transition: 0.25s ease;
 }
 
 .delete:hover {
-  background: #ffdbdb;
-  border-color: #ffb3b3;
+  background: #ffd5d5;
 }
 
 /* ---------------------------------------------------------
    PAGINATION
 --------------------------------------------------------- */
 .pagination {
-  margin-top: 22px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
-  gap: 16px;
-  align-items: center;
+  gap: 18px;
 }
 
 .pagination button {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #d5dde5;
-  background: white;
-  cursor: pointer;
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: 1px solid #cfe6ec;
+  background: #ffffff;
   font-size: 14px;
-  transition: 0.2s;
+  cursor: pointer;
+  transition: 0.25s ease;
 }
 
 .pagination button:hover {
-  background: #f1f9ff;
-  border-color: #4ca1af;
-}
-
-.prescriptionBtn {
-  background: #4a6cf7;
-  color: white !important;
-  padding: 5px 10px;
-  border-radius: 6px;
-  margin-right: 8px;
-  font-size: 13px;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.prescriptionBtn:hover {
-  background: #3b57d6;
+  background: #e7f6f9;
+  border-color: #2c7da0;
 }
 
 /* ---------------------------------------------------------
-   ANIMATIONS
+   ANIMATION
 --------------------------------------------------------- */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -198,19 +197,21 @@
 --------------------------------------------------------- */
 @media (max-width: 900px) {
   .container {
-    padding: 20px;
+    padding: 24px;
   }
 
   .filters {
     flex-direction: column;
-    align-items: stretch;
+    padding: 18px;
   }
 
-  .tableWrap {
-    padding: 8px;
+  .actions {
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .table th, .table td {
-    padding: 10px;
+  .table td,
+  .table th {
+    padding: 12px;
   }
 }

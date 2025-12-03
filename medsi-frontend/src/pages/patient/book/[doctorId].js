@@ -1,3 +1,4 @@
+// src/pages/patient/book/[doctorId].js
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NavbarPatient from "../../../components/Dashboard/NavbarPatient";
@@ -10,17 +11,21 @@ export default function DoctorSlotsPage() {
 
   const [slots, setSlots] = useState([]);
   const [doctor, setDoctor] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!doctorId) return;
 
     const load = async () => {
+      setLoading(true);
       try {
         const res = await API.get(`/api/patient/doctors/${doctorId}/slots`);
-        setSlots(res.data.slots);
-        if (res.data.slots[0]) setDoctor(res.data.slots[0].doctor);
+        setSlots(res.data.slots || []);
+        if (res.data.slots && res.data.slots[0]) setDoctor(res.data.slots[0].doctor);
       } catch (err) {
         console.error("Slots fetch error:", err);
+      } finally {
+        setLoading(false);
       }
     };
     load();
@@ -29,41 +34,72 @@ export default function DoctorSlotsPage() {
   return (
     <>
       <NavbarPatient />
-
       <div className={styles.container}>
-        <h2>Available Slots</h2>
+        <h2 className={styles.pageTitle}>Available Slots</h2>
 
         {doctor && (
           <div className={styles.doctorCard}>
-            <h3>Dr. {doctor.user.name}</h3>
-            <p>{doctor.specialization}</p>
+            <div className={styles.doctorCardRow}>
+              <div>
+                <div className={styles.docNameLarge}>Dr. {doctor.user.name}</div>
+                <div className={styles.docSpecSmall}>{doctor.specialization}</div>
+              </div>
+
+              <div className={styles.docRight}>
+                <div className={styles.smallMuted}>Rating</div>
+                <div className={styles.boldSmall}>4.8 ★</div>
+              </div>
+            </div>
           </div>
         )}
 
-        <div className={styles.slotGrid}>
-          {slots.map((s) => (
-            <div
-              key={s.id}
-              className={styles.slotCard}
-              onClick={() =>
-                router.push({
-                  pathname: "/patient/book/confirm",
-                  query: {
-                    doctorId,
-                    slotId: s.id,
-                    startTime: s.startTime,
-                    endTime: s.endTime,
-                  },
-                })
-              }
-            >
-              <p><strong>{new Date(s.startTime).toLocaleString()}</strong></p>
-              <p>Duration: {s.duration} min</p>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className={styles.empty}>Loading slots…</div>
+        ) : (
+          <>
+            {slots.length === 0 ? (
+              <div className={styles.empty}>No available slots.</div>
+            ) : (
+              <div className={styles.slotGrid}>
+                {slots.map((s) => (
+                  <div
+                    key={s.id}
+                    className={styles.slotCard}
+                    onClick={() =>
+                      router.push({
+                        pathname: "/patient/book/confirm",
+                        query: {
+                          doctorId,
+                          slotId: s.id,
+                          startTime: s.startTime,
+                          endTime: s.endTime,
+                        },
+                      })
+                    }
+                  >
+                    <div className={styles.slotTop}>
+                      <div className={styles.slotTime}>
+                        {new Date(s.startTime).toLocaleString([], {
+                          weekday: "short",
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </div>
+                      <div className={styles.slotDuration}>Duration: {s.duration} min</div>
+                    </div>
 
-        {slots.length === 0 && <p>No available slots.</p>}
+                    <div className={styles.slotBottom}>
+                      <div className={styles.slotCTA}>Book this slot</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </>
   );

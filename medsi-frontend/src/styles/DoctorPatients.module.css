@@ -1,159 +1,214 @@
 /* ---------------------------------------------------------
-   PAGE LAYOUT
+   MAIN LAYOUT
 --------------------------------------------------------- */
 .container {
-  padding: 34px 60px;
-  animation: fadeIn 0.3s ease;
+  padding: 40px 60px;
+  animation: fadeIn 0.4s ease;
+  background: #f8fafc;
+  min-height: 100vh;
 }
 
+/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .header h2 {
   margin: 0;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
   color: #0f172a;
 }
 
 /* ---------------------------------------------------------
-   SEARCH + BUTTONS
+   SEARCH & ACTIONS
 --------------------------------------------------------- */
+.header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .searchInput {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #cfd8e3;
-  margin-right: 12px;
-  min-width: 240px;
-  background: #f7fafc;
-  transition: all 0.2s ease;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid #cfe6ec;
+  background: #ffffff;
+  min-width: 260px;
+  font-size: 14px;
+  transition: 0.25s;
 }
 
 .searchInput:focus {
-  border-color: #4ca1af;
-  box-shadow: 0 0 8px rgba(76, 161, 175, 0.4);
-}
-
-.primary {
-  background: linear-gradient(135deg, #4ca1af, #2c8a99);
-  color: white;
-  padding: 10px 16px;
-  margin-right: 8px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.2s ease;
-  box-shadow: 0 4px 14px rgba(76,161,175,0.3);
-}
-
-.primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(76,161,175,0.38);
+  border-color: #2c7da0;
+  box-shadow: 0 0 8px rgba(76,161,175,0.35);
 }
 
 /* ---------------------------------------------------------
-   TABLE CONTAINER
+   PRIMARY BUTTON (TEAL GRADIENT)
+--------------------------------------------------------- */
+.primary {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #4ca1af, #2c7da0);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 4px 16px rgba(44,125,160,0.25);
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(44,125,160,0.35);
+  background: linear-gradient(135deg, #3e8e9a, #23647e);
+}
+
+/* ---------------------------------------------------------
+   TABLE
 --------------------------------------------------------- */
 .tableWrap {
-  margin-top: 20px;
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 10px 35px rgba(0,0,0,0.06);
-  border: 1px solid #e8edf3;
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 5px 25px rgba(0,0,0,0.06);
+  border: 1px solid #edf2f7;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  overflow: hidden;
 }
 
 .table th {
+  background: #f1f5fb;
   padding: 14px;
-  background: #f9fbff;
-  border-bottom: 2px solid #eef2f8;
-  font-weight: 700;
-  color: #475569;
   font-size: 14px;
   text-align: left;
+  color: #475569;
+  font-weight: 700;
+  border-bottom: 2px solid #e2e8f0;
 }
 
 .table td {
   padding: 14px;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 14px;
+  border-bottom: 1px solid #eef2f7;
   color: #334155;
-  vertical-align: middle;
 }
 
-.table tr:hover {
-  background: #f8fdff;
+/* Zebra effect */
+.table tr:nth-child(even) td {
+  background: #fafcff;
+}
+
+/* Hover */
+.table tr:hover td {
+  background: #f3f8fa;
 }
 
 /* ---------------------------------------------------------
-   ACTION BUTTONS
+   ACTION BUTTONS INSIDE TABLE
 --------------------------------------------------------- */
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .actions button {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #dce4ee;
+  padding: 7px 12px;
+  border-radius: 10px;
+  border: 1px solid #d8e9ed;
   background: #ffffff;
+  font-size: 13px;
   cursor: pointer;
   transition: 0.2s ease;
-  font-size: 13px;
 }
 
 .actions button:hover {
-  background: #f1f9ff;
-  border-color: #4ca1af;
-  color: #4ca1af;
+  border-color: #2c7da0;
+  color: #2c7da0;
+  background: #e5f7fa;
 }
 
 .actions .danger {
   background: #ffecec;
-  color: #b40000 !important;
-  border-color: #ffcccc;
+  color: #c20f0f;
+  border-color: #ffd1d1;
 }
 
 .actions .danger:hover {
   background: #ffdada;
-  border-color: #ffb3b3;
+  border-color: #ffbebe;
+}
+
+/* ---------------------------------------------------------
+   GENDER + BLOOD BADGES
+--------------------------------------------------------- */
+.badge {
+  padding: 3px 10px;
+  border-radius: 40px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Male */
+.badgeMale {
+  background: #d8f1f5;
+  color: #23647e;
+}
+
+/* Female */
+.badgeFemale {
+  background: #ffe4f0;
+  color: #be185d;
+}
+
+/* Other */
+.badgeOther {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+/* Blood group */
+.badgeBlood {
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
 /* ---------------------------------------------------------
    PAGINATION
 --------------------------------------------------------- */
 .pagination {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
-  gap: 16px;
   align-items: center;
+  gap: 16px;
+  margin-top: 26px;
 }
 
 .pagination button {
   padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #d5dde5;
-  background: white;
+  border-radius: 10px;
+  border: 1px solid #cfe6ec;
+  background: #fff;
   cursor: pointer;
-  transition: 0.2s ease;
   font-size: 14px;
+  transition: 0.2s ease;
 }
 
 .pagination button:hover {
-  background: #f1f9ff;
-  border-color: #4ca1af;
+  background: #e7f6f9;
+  border-color: #2c7da0;
+}
+
+.pagination span {
+  font-size: 15px;
+  color: #475569;
 }
 
 /* ---------------------------------------------------------
@@ -166,118 +221,114 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: fadeIn 0.25s ease;
   z-index: 1000;
-  animation: fadeIn 0.2s ease;
 }
 
 /* ---------------------------------------------------------
    MODAL BOX
 --------------------------------------------------------- */
 .modal {
-  width: 720px;
-  max-width: 95%;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 25px 80px rgba(0,0,0,0.25);
-  overflow: hidden;
-  animation: slideUp 0.25s ease;
+  width: 750px;
+  max-width: 92%;
+  background: #ffffff;
+  border-radius: 18px;
+  animation: slideUp 0.28s ease;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
 }
 
 .modalHeader {
+  padding: 18px 22px;
+  border-bottom: 1px solid #edf2f7;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 20px;
-  border-bottom: 1px solid #eef1f5;
 }
 
 .modalHeader h3 {
   margin: 0;
   font-size: 20px;
-  color: #1e293b;
   font-weight: 700;
+  color: #1e293b;
 }
 
 .closeBtn {
   background: none;
   border: none;
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
-  color: #475569;
-  transition: 0.2s ease;
+  color: #64748b;
 }
 
 .closeBtn:hover {
-  color: #1e293b;
+  color: #000;
 }
 
 .modalBody {
-  padding: 20px;
+  padding: 24px 22px;
   max-height: 70vh;
   overflow-y: auto;
 }
 
 /* ---------------------------------------------------------
-   FORM STYLES
+   FORM ELEMENTS
 --------------------------------------------------------- */
 .form label {
   display: block;
+  margin-bottom: 6px;
   margin-top: 12px;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
   color: #475569;
-  font-weight: 500;
 }
 
 .form input,
 .form select,
 .form textarea {
   width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccd6e3;
-  margin-top: 6px;
-  font-size: 14px;
+  padding: 11px;
+  border-radius: 12px;
+  border: 1px solid #cfe6ec;
   background: #f8fafc;
-  transition: 0.2s ease;
+  font-size: 14px;
+  transition: 0.25s ease;
 }
 
 .form input:focus,
 .form textarea:focus,
 .form select:focus {
-  border-color: #4ca1af;
-  box-shadow: 0 0 8px rgba(76,161,175,0.3);
+  border-color: #2c7da0;
+  box-shadow: 0 0 8px rgba(44,125,160,0.3);
 }
 
 .form textarea {
-  min-height: 90px;
-  resize: vertical;
+  min-height: 100px;
 }
 
-/* ---------------------------------------------------------
-   MODAL FOOTER
---------------------------------------------------------- */
+/* Modal footer */
 .modalFooter {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 14px;
+  margin-top: 22px;
 }
 
 .modalFooter button {
   padding: 10px 16px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
   font-weight: 600;
 }
 
+/* Primary button teal */
 .modalFooter .primary {
-  background: #4ca1af;
+  background: linear-gradient(135deg, #4ca1af, #2c7da0);
   color: white;
 }
 
-.modalFooter button:hover {
-  opacity: 0.9;
+.modalFooter .primary:hover {
+  background: linear-gradient(135deg, #3e8e9a, #23647e);
 }
 
 /* ---------------------------------------------------------
@@ -289,6 +340,6 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

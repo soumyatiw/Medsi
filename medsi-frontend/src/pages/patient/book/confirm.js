@@ -1,3 +1,4 @@
+// src/pages/patient/book/confirm.js
 import { useRouter } from "next/router";
 import { useState } from "react";
 import NavbarPatient from "../../../components/Dashboard/NavbarPatient";
@@ -15,7 +16,7 @@ export default function ConfirmBooking() {
     try {
       setLoading(true);
 
-      const res = await API.post("/api/patient/appointments", {
+      await API.post("/api/patient/appointments", {
         doctorId,
         slotId,
         reason,
@@ -33,24 +34,55 @@ export default function ConfirmBooking() {
   return (
     <>
       <NavbarPatient />
-
       <div className={styles.container}>
-        <h2>Confirm Appointment</h2>
+        <h2 className={styles.pageTitle}>Confirm Appointment</h2>
 
-        <div className={styles.confirmBox}>
-          <p><strong>Date:</strong> {new Date(startTime).toLocaleString()}</p>
-          <p><strong>End Time:</strong> {new Date(endTime).toLocaleString()}</p>
+        <div className={styles.confirmWrap}>
+          <div className={styles.confirmLeft}>
+            <div className={styles.confirmCard}>
+              <div className={styles.confirmRow}>
+                <div className={styles.confirmLabel}>Date</div>
+                <div className={styles.confirmValue}>{startTime ? new Date(startTime).toLocaleString() : "—"}</div>
+              </div>
 
-          <textarea
-            className={styles.textarea}
-            placeholder="Reason for appointment..."
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-          />
+              <div className={styles.confirmRow}>
+                <div className={styles.confirmLabel}>End Time</div>
+                <div className={styles.confirmValue}>{endTime ? new Date(endTime).toLocaleString() : "—"}</div>
+              </div>
 
-          <button onClick={bookNow} className={styles.button} disabled={loading}>
-            {loading ? "Booking..." : "Confirm Appointment"}
-          </button>
+              <textarea
+                className={styles.textarea}
+                placeholder="Reason for appointment..."
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+
+              <div className={styles.confirmActions}>
+                <button className={styles.primaryBtnBooking} onClick={bookNow} disabled={loading}>
+                  {loading ? "Booking..." : "Confirm Appointment"}
+                </button>
+
+                <button
+                  className={styles.ghostBtnBooking}
+                  onClick={() => router.back()}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.confirmRight}>
+            <div className={styles.infoCard}>
+              <h4 className={styles.infoTitle}>How to prepare</h4>
+              <ul className={styles.infoList}>
+                <li>Arrive 10 minutes early.</li>
+                <li>Keep previous medical reports ready.</li>
+                <li>Inform the doctor about current medicines.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </>

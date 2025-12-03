@@ -10,6 +10,8 @@ async function getDoctorFromUser(userId) {
   });
 }
 
+
+
 exports.getDashboardStats = async (req, res) => {
   try {
     const doctor = await prisma.doctor.findUnique({
@@ -20,31 +22,52 @@ exports.getDashboardStats = async (req, res) => {
       return res.status(403).json({ message: "Doctor profile not found" });
     }
 
-    // Count patients
+    /* -----------------------------------------
+       BASIC COUNTS
+    ----------------------------------------- */
     const patientsCount = await prisma.doctorPatient.count({
       where: { doctorId: doctor.id }
     });
 
-    // Count appointments
     const appointmentsCount = await prisma.appointment.count({
       where: { doctorId: doctor.id }
     });
 
-    // Count doctor slots
     const slotsCount = await prisma.doctorSlot.count({
       where: { doctorId: doctor.id }
     });
 
-    // Count reports
     const reportsCount = await prisma.report.count({
       where: { doctorId: doctor.id }
     });
 
+    /* -----------------------------------------
+       NEXT UPCOMING APPOINTMENT
+    ----------------------------------------- */
+    const nextUpcomingAppointment = await prisma.appointment.findFirst({
+      where: {
+        doctorId: doctor.id,
+        status: "UPCOMING",
+        appointmentDate: { gte: new Date() }
+      },
+      include: {
+        patient: {
+          include: { user: true }
+        }
+      },
+      orderBy: { appointmentDate: "asc" }
+    });
+
+    /* -----------------------------------------
+       RESPONSE
+    ----------------------------------------- */
     return res.json({
       patients: patientsCount,
       appointments: appointmentsCount,
       slots: slotsCount,
       reports: reportsCount,
+
+      nextUpcomingAppointment // ⭐ added here
     });
 
   } catch (err) {
@@ -52,7 +75,6 @@ exports.getDashboardStats = async (req, res) => {
     return res.status(500).json({ message: "Server error fetching dashboard stats" });
   }
 };
-
 
 /* ---------------------------------------------------------
    CREATE + LINK PATIENT

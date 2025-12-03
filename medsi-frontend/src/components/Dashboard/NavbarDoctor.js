@@ -37,8 +37,6 @@ export default function NavbarDoctor() {
         <Link href="/doctor/patients"><Users size={18}/> My Patients</Link>
         <Link href="/doctor/appointments"><Calendar size={18}/> Appointments</Link>
         <Link href="/doctor/slots"><Watch size={18}/> Slots</Link>
-        <Link href="/doctor/prescriptions"><Pill size={18}/> Prescriptions</Link>
-        <Link href="/doctor/reports"><FileText size={18}/> Reports</Link>
 
         {/* Logout Button */}
         <button onClick={handleLogout} className={styles.logout} style={{ background: "none", border: "none", cursor: "pointer" }}>

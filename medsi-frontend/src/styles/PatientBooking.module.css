@@ -1,49 +1,338 @@
+/* src/styles/PatientBooking.module.css
+   Teal Gradient, premium cards, CSS Modules safe
+*/
+
 .container {
-  padding: 30px 50px;
+  padding: 40px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #0f172a;
+  background: #fff;
 }
 
-.grid, .slotGrid {
+/* Page header */
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.pageSubtitle {
+  margin: 0;
+  color: #6b7280;
+  font-size: 13.5px;
+}
+
+/* Header row */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* controls */
+.headerControls {
+  display: flex;
+  gap: 12px;
+}
+
+/* select */
+.select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(44,125,160,0.18);
+  background: rgba(255,255,255,0.9);
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+}
+
+/* grid of doctors */
+.grid,
+.slotGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
 
-.card, .slotCard {
-  padding: 18px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  cursor: pointer;
+/* empty */
+.empty, .emptyCard {
+  padding: 20px;
+  border-radius: 12px;
+  background: #fbfdff;
+  border: 1px solid #eef7f7;
+  color: #64748b;
+  text-align: center;
 }
 
-.card:hover, .slotCard:hover {
-  background: #f1f9ff;
+/* doctor card */
+.card {
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #fbfeff);
+  border: 1px solid rgba(44,125,160,0.08);
+  box-shadow: 0 10px 30px rgba(44,125,160,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.docTop {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.docAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e6fbfb, #f1fcfb);
+  color: #2c7da0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:18px;
+  border: 1px solid rgba(44,125,160,0.06);
+}
+
+.docName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.docSpec {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.docDesc {
+  font-size: 13.5px;
+  color: #475569;
+  margin: 0;
+}
+
+/* actions */
+.cardActions {
+  display:flex;
+  justify-content:flex-end;
+  margin-top: auto;
 }
 
 .button {
-  margin-top: 10px;
   padding: 10px 14px;
-  background: #3182ce;
-  color: white;
-  border-radius: 6px;
-  text-align: center;
-  display: inline-block;
-}
-
-.confirmBox {
-  background: white;
-  padding: 25px;
   border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-  max-width: 500px;
+  background: linear-gradient(135deg,#4ca1af,#2c7da0);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(44,125,160,0.12);
 }
 
-.textarea {
-  width: 100%;
-  height: 100px;
+/* doctor card large header (on slots page) */
+.doctorCard {
   margin-top: 12px;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(180deg,#ffffff,#fbfeff);
+  border: 1px solid rgba(44,125,160,0.06);
+  box-shadow: 0 10px 28px rgba(44,125,160,0.05);
+}
+
+.doctorCardRow {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.docNameLarge {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.docSpecSmall {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.docRight {
+  text-align:right;
+}
+
+.smallMuted {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.boldSmall {
+  font-weight:700;
+  color: #0f172a;
+}
+
+/* slot card */
+.slotCard {
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(180deg,#f7fffe,#f2fdfc);
+  border: 1px solid rgba(44,125,160,0.08);
+  box-shadow: 0 12px 30px rgba(44,125,160,0.06);
+  cursor: pointer;
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.slotCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 46px rgba(44,125,160,0.12);
+}
+
+.slotTop {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.slotTime {
+  font-weight:700;
+  color:#0f172a;
+}
+
+.slotDuration {
+  font-size:13px;
+  color:#64748b;
+}
+
+.slotBottom {
+  display:flex;
+  justify-content:flex-end;
+}
+
+.slotCTA {
+  background: linear-gradient(135deg,#4ca1af,#2c7da0);
+  color:white;
+  padding:6px 10px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:13px;
+}
+
+/* confirm layout */
+.confirmWrap {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  margin-top: 18px;
+}
+
+.confirmCard {
+  padding: 20px;
+  border-radius: 14px;
+  background: linear-gradient(180deg,#ffffff,#fbfeff);
+  border: 1px solid rgba(44,125,160,0.06);
+  box-shadow: 0 10px 30px rgba(44,125,160,0.05);
+}
+
+.confirmRow {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.confirmLabel {
+  width:110px;
+  color:#64748b;
+  font-weight:600;
+}
+
+.confirmValue {
+  color:#0f172a;
+  font-weight:700;
+}
+
+/* textarea */
+.textarea {
+  width:100%;
+  min-height:120px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(44,125,160,0.12);
+  background: #fff;
+  font-size:14px;
+  color:#0f172a;
+  resize: vertical;
+  margin-top:8px;
+}
+
+/* confirm actions */
+.confirmActions {
+  display:flex;
+  gap:12px;
+  margin-top:14px;
+}
+
+.primaryBtnBooking {
+  padding:10px 14px;
+  border-radius:10px;
+  background: linear-gradient(135deg,#4ca1af,#2c7da0);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.ghostBtnBooking {
+  padding:10px 14px;
+  border-radius:10px;
+  background:#fff;
+  border:1px solid rgba(44,125,160,0.08);
+  cursor:pointer;
+}
+
+/* right info */
+.confirmRight .infoCard {
+  padding:16px;
+  border-radius:12px;
+  background: linear-gradient(180deg,#ffffff,#fbfeff);
+  border:1px solid rgba(44,125,160,0.06);
+  box-shadow: 0 8px 22px rgba(44,125,160,0.04);
+}
+
+.infoTitle {
+  margin:0 0 8px;
+  font-weight:700;
+  color:#0f172a;
+  font-size:15px;
+}
+
+.infoList {
+  margin:0;
+  padding-left:18px;
+  color:#64748b;
+  font-size:14px;
+}
+
+/* small helpers */
+.muted { color: #6b7280; }
+.bold { font-weight:700; }
+
+/* responsiveness */
+@media (max-width: 980px) {
+  .confirmWrap { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .grid, .slotGrid { grid-template-columns: 1fr; }
+  .container { padding: 20px; }
 }

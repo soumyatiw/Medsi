@@ -1,217 +1,266 @@
-/* ------------------ PAGE WRAPPER ------------------ */
+/* ---------------------------------------------------------
+   PATIENT APPOINTMENTS — PREMIUM TEAL THEME
+--------------------------------------------------------- */
+
+/* PAGE WRAPPER */
 .container {
   padding: 40px 60px;
+  max-width: 1250px;
+  margin: 0 auto;
   animation: fadeIn 0.3s ease;
+  font-family: Inter, system-ui;
+  color: #0f172a;
 }
 
+/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 25px;
 }
 
 .title {
-  font-size: 30px;
-  font-weight: 800;
-  color: #0f172a;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
 }
 
 .subtitle {
+  margin-top: 4px;
   font-size: 14px;
   color: #64748b;
-  margin-top: 4px;
 }
 
-/* ------------------ BUTTONS ------------------ */
+/* HEADER ACTION BUTTONS */
+.headerActions {
+  display: flex;
+  gap: 10px;
+}
+
 .primaryBtn {
-  background: #4ca1af;
+  background: linear-gradient(135deg, #4ca1af, #2c7da0);
   color: white;
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   text-decoration: none;
+  font-size: 14px;
+  transition: 0.25s ease;
+  box-shadow: 0 6px 20px rgba(44,125,160,0.18);
 }
 
 .primaryBtn:hover {
-  background: #3b8d9c;
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #3e8e9a, #23647e);
 }
 
 .ghostBtn {
   padding: 10px 14px;
   background: white;
-  border: 1px solid #cbd5e1;
-  color: #0f172a;
-  border-radius: 8px;
+  border-radius: 10px;
+  border: 1px solid #d8e6ea;
+  color: #2c7da0;
   cursor: pointer;
-  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .ghostBtn:hover {
-  background: #f1f5f9;
+  background: #f1f9fa;
 }
 
-/* ------------------ LIST WRAPPER ------------------ */
+/* ---------------------------------------------------------
+   APPOINTMENT LIST
+--------------------------------------------------------- */
 .list {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* ------------------ APPOINTMENT CARD ------------------ */
+/* ---------------------------------------------------------
+   APPOINTMENT CARD — PREMIUM
+--------------------------------------------------------- */
 .card {
   display: flex;
-  justify-content: space-between;
-  padding: 18px;
+  padding: 0;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-  border: 1px solid #eef2f7;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #ecf6f7;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.04);
   animation: fadeUp 0.35s ease;
 }
 
-/* LEFT COLUMN */
+/* Gradient left strip */
+.cardLeftStrip {
+  width: 8px;
+  background: linear-gradient(180deg, #4ca1af, #2c7da0);
+}
+
+/* LEFT SECTION */
 .cardLeft {
-  width: 28%;
+  padding: 16px 20px;
+  width: 27%;
 }
 
 .date {
   font-size: 16px;
   font-weight: 600;
-  color: #0f172a;
+  color: #1e2836;
 }
 
 .doctor {
   font-size: 15px;
-  margin-top: 4px;
   font-weight: 600;
-  color: #475569;
+  margin-top: 4px;
+  color: #374151;
 }
 
 .meta {
-  font-size: 14px;
+  font-size: 13px;
   color: #64748b;
+  margin-top: 2px;
 }
 
-/* MIDDLE */
+/* MIDDLE SECTION */
 .cardMiddle {
+  padding: 16px 20px;
   width: 45%;
+  border-left: 1px solid #f3f7f8;
 }
 
 .reason {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .statusRow {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
+/* STATUS BADGES */
 .badge {
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
   font-size: 12px;
-  font-weight: 700;
-  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .upcoming {
-  background: #2563eb;
+  background: #e0f6f8;
+  color: #2c7da0;
 }
 
 .completed {
-  background: #16a34a;
+  background: #e6ffe9;
+  color: #15803d;
 }
 
 .cancelled {
-  background: #dc2626;
+  background: #ffe5e5;
+  color: #b91c1c;
 }
 
+/* slot info */
 .slotInfo {
+  padding: 4px 10px;
+  background: #f1f9fa;
+  border-radius: 8px;
   font-size: 13px;
   color: #475569;
-  padding: 4px 6px;
-  background: #f1f5f9;
-  border-radius: 6px;
+  border: 1px solid #d8e6ea;
 }
 
-/* RIGHT COLUMN (ACTIONS) */
+/* RIGHT SECTION */
 .cardRight {
-  width: 20%;
+  padding: 16px 20px;
+  width: 28%;
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: flex-end;
 }
 
+/* ACTION BUTTONS */
 .cancelBtn {
   background: #fff5f5;
-  border: 1px solid #dc2626;
-  color: #dc2626;
-  padding: 8px 12px;
-  border-radius: 6px;
+  border: 1px solid #e4b4b4;
+  padding: 7px 14px;
+  border-radius: 10px;
+  color: #c53030;
+  font-size: 13px;
   cursor: pointer;
+  font-weight: 600;
 }
 
 .cancelBtn:hover {
-  background: #ffe2e2;
+  background: #ffe5e5;
 }
 
-/* DELETE BUTTON */
 .deleteBtn {
-  background: #ffebeb;
-  border: 1px solid #d11a1a;
-  color: #d11a1a;
-  padding: 8px 12px;
-  border-radius: 6px;
+  background: #ffefef;
+  border: 1px solid #e09191;
+  padding: 7px 14px;
+  border-radius: 10px;
+  color: #b91c1c;
+  font-size: 13px;
   cursor: pointer;
+  font-weight: 600;
 }
 
 .deleteBtn:hover {
-  background: #ffd7d7;
+  background: #ffdcdc;
 }
 
-/* VIEW BTN */
 .viewBtn {
-  padding: 8px 14px;
-  background: #e2e8f0;
-  border-radius: 6px;
+  background: #eef6f7;
+  padding: 7px 14px;
+  border-radius: 10px;
   text-decoration: none;
+  color: #2c7da0;
+  font-size: 13px;
   font-weight: 600;
-  color: #0f172a;
 }
 
 .viewBtn:hover {
-  background: #cbd5e1;
+  background: #dff1f3;
 }
 
 /* EMPTY & ERROR STATES */
 .empty {
-  text-align: center;
   padding: 40px 0;
-  color: #475569;
+  text-align: center;
+  color: #64748b;
 }
 
 .error {
   text-align: center;
-  padding: 15px;
+  padding: 16px;
   background: #ffe4e6;
-  border: 1px solid #f43f5e;
+  border: 1px solid #f8b4c0;
   color: #b91c1c;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 /* LINKS */
 .linkInline {
-  color: #2563eb;
+  color: #2c7da0;
+  font-weight: 600;
   text-decoration: underline;
-  cursor: pointer;
 }
 
-/* ------------------ ANIMATIONS ------------------ */
+/* ---------------------------------------------------------
+   ANIMATIONS
+--------------------------------------------------------- */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -220,38 +269,39 @@
   to { opacity: 1; }
 }
 
-/* ------------------ RESPONSIVE ------------------ */
+/* ---------------------------------------------------------
+   RESPONSIVE DESIGN
+--------------------------------------------------------- */
 @media (max-width: 900px) {
   .card {
     flex-direction: column;
-    gap: 14px;
   }
 
-  .cardLeft, .cardMiddle, .cardRight {
+  .cardLeft,
+  .cardMiddle,
+  .cardRight {
     width: 100%;
+    border-left: none;
+    padding: 14px 16px;
   }
 
   .cardRight {
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 }
 
 @media (max-width: 600px) {
   .container {
-    padding: 25px 16px;
+    padding: 24px 16px;
   }
 
   .header {
     flex-direction: column;
-    align-items: flex-start;
     gap: 10px;
   }
 
   .headerActions {
     width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
   }
 }

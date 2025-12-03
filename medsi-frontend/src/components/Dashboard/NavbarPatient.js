@@ -30,14 +30,12 @@ export default function NavbarPatient() {
           height={36}
           className={styles.logo}
         />
-      <h2 className={styles.brand}>Medsi Patient</h2>
+      <h2 className={styles.brand}>Medsi</h2>
       </div>
       <div className={styles.links}>
         <Link href="/patient">Dashboard</Link>
         <Link href="/patient/appointments"><Calendar size={18}/> Appointments</Link>
         <Link href="/patient/prescriptions"><Pill size={18}/> Prescriptions</Link>
-        <Link href="/patient/reports"><FileText size={18}/> Reports</Link>
-
         {/* Logout Button */}
         <button
           onClick={handleLogout}

@@ -13,27 +13,16 @@ export default function PrescriptionDetails() {
   const [prescription, setPrescription] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* ---------------------------------------------------
-      MEMOIZED FETCH FUNCTION
-  ---------------------------------------------------- */
   const load = useCallback(async () => {
-    if (!id || typeof id !== "string") return;
-
+    if (!id) return;
     const res = await API.get(`/api/patient/prescriptions/${id}`);
-    setPrescription(res.data?.prescription ?? null);
+    setPrescription(res.data?.prescription || null);
     setLoading(false);
   }, [id]);
 
-  /* ---------------------------------------------------
-      SAFE EFFECT — no ESLint complaints
-  ---------------------------------------------------- */
   useEffect(() => {
     if (!router.isReady) return;
-
-    // Prevent ESLint rule "set-state-in-effect"
-    queueMicrotask(() => {
-      load();
-    });
+    queueMicrotask(load);
   }, [router.isReady, load]);
 
   if (loading || !prescription) {
@@ -48,31 +37,66 @@ export default function PrescriptionDetails() {
   return (
     <>
       <NavbarPatient />
-
       <div className={styles.container}>
-        <h2 className={styles.title}>Prescription Details</h2>
+        <div className={styles.header}>
+          <div className={styles.title}>Prescription Details</div>
+        </div>
 
-        <div className={styles.card}>
-          <h3>Doctor: {prescription.doctor?.user?.name}</h3>
+        <div className={styles.detailsWrap}>
+          {/* LEFT MAIN CARD */}
+          <div className={styles.detailsCard}>
+            <div className={styles.docRow}>
+              <div className={styles.avatarLarge}>
+                {prescription.doctor?.user?.name?.slice(0, 1)}
+              </div>
+              <div>
+                <div className={styles.docNameLarge}>
+                  Dr. {prescription.doctor?.user?.name}
+                </div>
+                <div className={styles.docSpecSmall}>
+                  {prescription.doctor?.specialization}
+                </div>
+              </div>
+            </div>
 
-          <p>
-            <strong>Date:</strong>{" "}
-            {new Date(prescription.createdAt).toLocaleString()}
-          </p>
+            <div className={styles.infoRow}>
+              <div className={styles.label}>Date:</div>
+              <div className={styles.value}>
+                {new Date(prescription.createdAt).toLocaleString()}
+              </div>
+            </div>
 
-          <p><strong>Diagnosis:</strong> {prescription.diagnosis}</p>
+            <div className={styles.section}>
+              <div className={styles.label}>Diagnosis:</div>
+              <div className={styles.value}>{prescription.diagnosis}</div>
+            </div>
 
-          <p><strong>Medicines:</strong></p>
-          <ul>
-            {Array.isArray(prescription.medicines) &&
-              prescription.medicines.map((m, i) => (
-                <li key={i}>{m}</li>
-              ))}
-          </ul>
+            <div className={styles.section}>
+              <div className={styles.label}>Medicines:</div>
+              <ul className={styles.list}>
+                {(prescription.medicines || []).map((m, i) => (
+                  <li key={i}>{m}</li>
+                ))}
+              </ul>
+            </div>
 
-          {prescription.notes && (
-            <p><strong>Notes:</strong> {prescription.notes}</p>
-          )}
+            {prescription.notes && (
+              <div className={styles.section}>
+                <div className={styles.label}>Notes:</div>
+                <div className={styles.value}>{prescription.notes}</div>
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT SIDEBAR */}
+          <div className={styles.sideCard}>
+            <div className={styles.sideTitle}>Important Tips</div>
+            <ul className={styles.sideList}>
+              <li>Follow medication on time.</li>
+              <li>Avoid self-medication.</li>
+              <li>Contact doctor if symptoms worsen.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </>

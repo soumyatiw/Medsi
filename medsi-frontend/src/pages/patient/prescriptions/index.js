@@ -9,9 +9,6 @@ export default function PatientPrescriptions() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  /* -------------------------------------------------
-      FIX: load() declared BEFORE useEffect + memoized
-  -------------------------------------------------- */
   const load = useCallback(async () => {
     try {
       const res = await API.get("/api/patient/prescriptions");
@@ -23,9 +20,6 @@ export default function PatientPrescriptions() {
     }
   }, []);
 
-  /* -------------------------------------------------
-      SAFE EFFECT (no ESLint warnings)
-  -------------------------------------------------- */
   useEffect(() => {
     load();
   }, [load]);
@@ -35,28 +29,44 @@ export default function PatientPrescriptions() {
       <NavbarPatient />
 
       <div className={styles.container}>
-        <h2 className={styles.title}>My Prescriptions</h2>
+        <div className={styles.header}>
+          <div className={styles.title}>My Prescriptions</div>
+          <div className={styles.subTitle}>
+            View and download your medical prescriptions.
+          </div>
+        </div>
 
         {loading ? (
-          <div>Loading…</div>
+          <div className={styles.empty}>Loading…</div>
         ) : data.length === 0 ? (
-          <div>No prescriptions found.</div>
+          <div className={styles.empty}>No prescriptions found.</div>
         ) : (
-          <div className={styles.list}>
+          <div className={styles.grid}>
             {data.map((p) => (
               <a
                 href={`/patient/prescriptions/${p.id}`}
                 key={p.id}
                 className={styles.card}
               >
-                <h3>Dr. {p.doctor?.user?.name}</h3>
-                <p>
-                  <strong>Date:</strong>{" "}
-                  {new Date(p.createdAt).toLocaleDateString()}
-                </p>
-                <p>
-                  <strong>Diagnosis:</strong> {p.diagnosis}
-                </p>
+                <div className={styles.cardTop}>
+                  <div className={styles.avatar}>
+                    {p.doctor?.user?.name?.slice(0, 1)}
+                  </div>
+                  <div>
+                    <div className={styles.docName}>
+                      Dr. {p.doctor?.user?.name}
+                    </div>
+                    <div className={styles.date}>
+                      {new Date(p.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.diagnosis}>
+                  {p.diagnosis || "Click to view details"}
+                </div>
+
+                <div className={styles.cardFooter}>View Details →</div>
               </a>
             ))}
           </div>

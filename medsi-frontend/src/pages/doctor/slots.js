@@ -122,29 +122,25 @@ export default function DoctorSlots({ user }) {
 
                     <td>
                       <span
-                        className={`${styles.badge} ${
-                          s.status === "AVAILABLE"
+                        className={`${styles.badge} ${s.status === "AVAILABLE"
                             ? styles.available
                             : s.status === "BOOKED"
-                            ? styles.booked
-                            : styles.expired
-                        }`}
+                              ? styles.booked
+                              : styles.expired
+                          }`}
                       >
                         {s.status}
                       </span>
                     </td>
 
                     <td className={styles.actions}>
-                      {s.status !== "BOOKED" ? (
-                        <button
-                          className={styles.danger}
-                          onClick={() => deleteSlot(s.id)}
-                        >
-                          Delete
-                        </button>
-                      ) : (
-                        "-"
-                      )}
+                      <button
+                        className={styles.danger}
+                        onClick={() => deleteSlot(s.id)}
+                      >
+                        Delete
+                      </button>
+
                     </td>
                   </tr>
                 ))

@@ -1,3 +1,4 @@
+// src/pages/patient/index.js (or wherever your page is)
 import NavbarPatient from "../../components/Dashboard/NavbarPatient";
 import DashboardCard from "../../components/Dashboard/DashboardCard";
 import styles from "../../styles/PatientDashboard.module.css";
@@ -68,10 +69,10 @@ export default function PatientDashboard({ user }) {
       <NavbarPatient />
 
       <div className={styles.container}>
-        {/* HERO SECTION */}
-        <div className={styles.hero}>
+        {/* HERO */}
+        <div className={styles.heroRow}>
           <div>
-            <h2 className={styles.heading}>Welcome {user.name} 👋</h2>
+            <h2 className={styles.heading}>Welcome, {user.name} 👋</h2>
             <p className={styles.subheading}>
               Manage your health — book appointments, view prescriptions & upload reports.
             </p>
@@ -88,7 +89,7 @@ export default function PatientDashboard({ user }) {
           </div>
         </div>
 
-        {/* DASHBOARD CARDS */}
+        {/* TOP SUMMARY CARDS */}
         <div className={styles.grid}>
           <DashboardCard
             title="Total Appointments"
@@ -131,70 +132,120 @@ export default function PatientDashboard({ user }) {
           />
         </div>
 
-        {/* MAIN CONTENT GRID */}
-        <div className={styles.main}>
-          {/* LEFT COLUMN */}
-          <div className={styles.leftCol}>
-            {/* NEXT APPOINTMENT */}
-            <section className={styles.section}>
-              <h3 className={styles.sectionTitle}>Next Appointment</h3>
+        {/* FULL WIDTH NEXT APPOINTMENT CARD (Doctor Dashboard style) */}
+        <div className={styles.nextWrapper}>
+          <div className={styles.nextCard}>
+            <div className={styles.nextCardLeft}>
+              {/* solid icon circle */}
+              <div className={styles.nextIcon}> 
+                <Calendar size={22} />
+              </div>
+            </div>
+
+            <div className={styles.nextCardBody}>
+              <div className={styles.nextCardHeader}>
+                <div className={styles.nextTitle}>Next Appointment</div>
+                {nextAppointment && (
+                  <div className={styles.nextStatus}>
+                    {new Date(nextAppointment.appointmentDate).toLocaleDateString()} •{" "}
+                    {new Date(nextAppointment.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                )}
+              </div>
 
               {nextAppointment ? (
-                <div className={styles.card}>
-                  <p><strong>Date:</strong> {new Date(nextAppointment.appointmentDate).toLocaleString()}</p>
-                  <p><strong>Doctor:</strong> Dr. {nextAppointment.doctor?.user?.name ?? "—"} ({nextAppointment.doctor?.specialization ?? "—"})</p>
-                  <p><strong>Reason:</strong> {nextAppointment.reason || "General Checkup"}</p>
+                <div className={styles.nextDetails}>
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Date</span>
+                    <span className={styles.detailValue}>
+                      {new Date(nextAppointment.appointmentDate).toLocaleString()}
+                    </span>
+                  </div>
 
-                  <div className={styles.row}>
-                    <Link href="/patient/appointments" className={styles.smallBtn}>
-                      View Appointments
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Doctor</span>
+                    <span className={styles.detailValue}>
+                      Dr. {nextAppointment.doctor?.user?.name ?? "—"} ({nextAppointment.doctor?.specialization ?? "—"})
+                    </span>
+                  </div>
+
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Reason</span>
+                    <span className={styles.detailValue}>
+                      {nextAppointment.reason || "General Checkup"}
+                    </span>
+                  </div>
+
+                  <div className={styles.nextActions}>
+                    <Link href="/patient/appointments" className={styles.nextBtn}>
+                      View All Appointments
                     </Link>
+                    <a
+                      className={styles.secondaryBtn}
+                      href={`/patient/appointments/${nextAppointment.id}`}
+                    >
+                      View Details
+                    </a>
                   </div>
                 </div>
               ) : (
-                <div className={styles.cardEmpty}>
-                  <p>No upcoming appointment.</p>
+                <div className={styles.emptyNext}>
+                  <div>No upcoming appointment</div>
                   <Link href="/patient/book" className={styles.linkInline}>
                     Book one now
                   </Link>
                 </div>
               )}
-            </section>
+            </div>
+          </div>
+        </div>
 
-            {/* PRESCRIPTIONS */}
+        {/* TWO-COLUMN: PRESCRIPTIONS | REPORTS */}
+        <div className={styles.twoCol}>
+          <div className={styles.colLeft}>
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>Recent Prescriptions</h3>
 
               {recentPrescriptions.length ? (
                 recentPrescriptions.map((p) => (
-                  <div key={p.id} className={styles.smallCard}>
-                    <div className={styles.smallCardRow}>
+                  <div key={p.id} className={styles.prescriptionCard}>
+                    <div className={styles.presTop}>
                       <div>
                         <div className={styles.muted}>Doctor</div>
                         <div className={styles.bold}>Dr. {p.doctor?.user?.name}</div>
                       </div>
 
-                      <div>
-                        <div className={styles.muted}>Date</div>
-                        <div className={styles.bold}>{new Date(p.createdAt).toLocaleDateString()}</div>
+                      <div className={styles.presDate}>
+                        {new Date(p.createdAt).toLocaleDateString()}
                       </div>
                     </div>
 
-                    <div className={styles.smallCardText}>
+                    <div className={styles.presBody}>
                       <div className={styles.muted}>Diagnosis</div>
-                      <div>{p.diagnosis}</div>
+                      <div className={styles.presText}>{p.diagnosis}</div>
+
+                      {Array.isArray(p.medicines) && p.medicines.length > 0 && (
+                        <div className={styles.meds}>
+                          <div className={styles.muted}>Medicines</div>
+                          <div className={styles.medsList}>
+                            {p.medicines.map((m, i) => (
+                              <span key={i} className={styles.medPill}>{m}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className={styles.cardEmpty}><p>No prescriptions yet.</p></div>
+                <div className={styles.cardEmpty}>
+                  No prescriptions yet.
+                </div>
               )}
             </section>
           </div>
 
-          {/* RIGHT COLUMN */}
-          <div className={styles.rightCol}>
-            {/* REPORTS */}
+          <div className={styles.colRight}>
             <section className={styles.section}>
               <h3 className={styles.sectionTitle}>Recent Reports</h3>
 
@@ -216,7 +267,9 @@ export default function PatientDashboard({ user }) {
                   </div>
                 ))
               ) : (
-                <div className={styles.cardEmpty}><p>No reports uploaded.</p></div>
+                <div className={styles.cardEmpty}>
+                  No reports uploaded.
+                </div>
               )}
             </section>
           </div>

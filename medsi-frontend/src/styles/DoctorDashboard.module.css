@@ -1,33 +1,136 @@
-/* PAGE WRAPPER */
+/* Main container */
 .container {
-  padding: 40px 60px;
+  padding: 50px 70px;
   animation: fadeIn 0.4s ease;
 }
 
-/* HEADING */
-.heading {
-  font-size: 32px;
-  font-weight: 800;
-  color: #0f172a;
+/* Header Section */
+.headerArea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
   animation: fadeUp 0.5s ease;
 }
 
-/* SUB HEADING */
-.subheading {
-  font-size: 15px;
-  color: #475569;
-  margin-top: 6px;
-  margin-bottom: 30px;
-  animation: fadeUp 0.7s ease;
+/* Profile Tag */
+.profileTag {
+  background: linear-gradient(135deg, #4ca1af, #2c7da0);
+  padding: 9px 18px;
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: rgba(0, 0, 0, 0.12) 0 4px 12px;
 }
 
-/* GRID FOR DASHBOARD CARDS */
+.tagText {
+  font-size: 14px;
+}
+
+/* Main Heading */
+.heading {
+  font-size: 34px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+/* Subheading */
+.subheading {
+  font-size: 16px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* Grid for cards */
 .grid {
   margin-top: 30px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 26px;
-  animation: fadeUp 0.9s ease;
+  animation: fadeUp 0.8s ease;
+}
+
+/* UPCOMING APPOINTMENT SECTION */
+.upcomingSection {
+  margin-top: 45px;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: rgba(0,0,0,0.06) 0 4px 20px;
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+/* Empty Box */
+.emptyBox {
+  text-align: center;
+  padding: 30px;
+  font-size: 16px;
+  color: #64748b;
+}
+
+/* Upcoming Appointment Card */
+.upcomingCard {
+  padding: 24px;
+  background: linear-gradient(135deg, #e6f7fa, #f4fcfd);
+  border-left: 6px solid #2c7da0;
+  border-radius: 12px;
+  animation: fadeUp 1s ease;
+}
+
+.apptTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.apptPatient {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* Badge updated to teal */
+.apptBadge {
+  background: #2c7da0;
+  color: white;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 50px;
+}
+
+.apptDate {
+  margin-top: 12px;
+  font-size: 16px;
+  color: #475569;
+}
+
+.apptReason {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #334155;
+}
+
+/* View Button with teal gradient */
+.viewBtn {
+  margin-top: 16px;
+  display: inline-block;
+  background: linear-gradient(135deg, #4ca1af, #2c7da0);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 550;
+  transition: 0.25s ease;
+}
+
+.viewBtn:hover {
+  background: linear-gradient(135deg, #3e8e9a, #23647e);
 }
 
 /* ANIMATIONS */
@@ -58,6 +161,6 @@
   }
 
   .heading {
-    font-size: 26px;
+    font-size: 28px;
   }
 }
