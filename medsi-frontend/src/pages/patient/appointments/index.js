@@ -9,16 +9,17 @@ import Link from "next/link";
 export default function PatientAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(null); // appointment id being acted on
+  const [actionLoading, setActionLoading] = useState(null); // appointment ID in progress
   const [error, setError] = useState(null);
 
+  /* ---------------- Fetch appointments ---------------- */
   const fetchAppointments = async () => {
     setLoading(true);
     setError(null);
+
     try {
       const res = await API.get("/api/patient/appointments");
-      // Defensive: accept array or nested shape
-      const data = res.data?.appointments ?? res.data ?? [];
+      const data = res.data?.appointments ?? [];
       setAppointments(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to load appointments:", err);
@@ -33,24 +34,50 @@ export default function PatientAppointments() {
     fetchAppointments();
   }, []);
 
+  /* ---------------- Cancel appointment ---------------- */
   const cancelAppointment = async (appt) => {
-    if (!confirm(`Cancel appointment on ${new Date(appt.appointmentDate).toLocaleString()} with Dr. ${appt.doctor?.user?.name || ""}?`)) {
-      return;
-    }
+    const confirmCancel = confirm(
+      `Cancel appointment on ${new Date(
+        appt.appointmentDate
+      ).toLocaleString()} with Dr. ${appt.doctor?.user?.name || ""}?`
+    );
+    if (!confirmCancel) return;
 
     setActionLoading(appt.id);
+
     try {
-      // call update endpoint — set status to CANCELLED
       await API.put(`/api/patient/appointments/${appt.id}`, {
         status: "CANCELLED",
       });
 
-      // Success — refresh list
-      await fetchAppointments();
       alert("Appointment cancelled");
+      fetchAppointments();
     } catch (err) {
       console.error("Cancel failed:", err);
       alert(err.response?.data?.message || "Failed to cancel appointment");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  /* ---------------- Delete appointment ---------------- */
+  const deleteAppointment = async (appt) => {
+    const confirmDelete = confirm(
+      `Permanently delete appointment on ${new Date(
+        appt.appointmentDate
+      ).toLocaleString()}? This action cannot be undone.`
+    );
+    if (!confirmDelete) return;
+
+    setActionLoading(appt.id);
+
+    try {
+      await API.delete(`/api/patient/appointments/${appt.id}`);
+      alert("Appointment deleted permanently");
+      fetchAppointments();
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert(err.response?.data?.message || "Failed to delete appointment");
     } finally {
       setActionLoading(null);
     }
@@ -69,63 +96,82 @@ export default function PatientAppointments() {
       <NavbarPatient />
 
       <div className={styles.container}>
+        {/* HEADER */}
         <div className={styles.header}>
           <div>
             <h2 className={styles.title}>My Appointments</h2>
-            <p className={styles.subtitle}>Upcoming & past appointments with your doctors</p>
+            <p className={styles.subtitle}>Upcoming & past appointments</p>
           </div>
 
           <div className={styles.headerActions}>
-            <Link href="/patient/book" className={styles.primaryBtn}>Book Appointment</Link>
-            <button onClick={fetchAppointments} className={styles.ghostBtn}>Refresh</button>
+            <Link href="/patient/book" className={styles.primaryBtn}>
+              Book Appointment
+            </Link>
+            <button onClick={fetchAppointments} className={styles.ghostBtn}>
+              Refresh
+            </button>
           </div>
         </div>
 
+        {/* MAIN CONTENT */}
         {loading ? (
           <div className={styles.empty}>Loading appointments…</div>
         ) : error ? (
           <div className={styles.error}>{error}</div>
         ) : appointments.length === 0 ? (
           <div className={styles.empty}>
-            You have no appointments. <Link href="/patient/book" className={styles.linkInline}>Book one now</Link>
+            You have no appointments.{" "}
+            <Link href="/patient/book" className={styles.linkInline}>
+              Book one now
+            </Link>
           </div>
         ) : (
           <div className={styles.list}>
             {appointments.map((a) => (
               <div key={a.id} className={styles.card}>
+                {/* LEFT COLUMN */}
                 <div className={styles.cardLeft}>
                   <div className={styles.date}>{formatDate(a.appointmentDate)}</div>
                   <div className={styles.doctor}>Dr. {a.doctor?.user?.name || "—"}</div>
                   <div className={styles.meta}>{a.doctor?.specialization || "General"}</div>
                 </div>
 
+                {/* MIDDLE COLUMN */}
                 <div className={styles.cardMiddle}>
-                  <div className={styles.reason}><strong>Reason:</strong> {a.reason || "—"}</div>
+                  <div className={styles.reason}>
+                    <strong>Reason:</strong> {a.reason || "—"}
+                  </div>
+
                   <div className={styles.statusRow}>
-                    <span className={`${styles.badge} ${a.status === "UPCOMING" ? styles.upcoming : a.status === "COMPLETED" ? styles.completed : styles.cancelled}`}>
+                    <span
+                      className={`${styles.badge} ${
+                        a.status === "UPCOMING"
+                          ? styles.upcoming
+                          : a.status === "COMPLETED"
+                          ? styles.completed
+                          : styles.cancelled
+                      }`}
+                    >
                       {a.status}
                     </span>
 
-                    {a.doctorSlot && a.doctorSlot.startTime && (
+                    {a.doctorSlot && (
                       <span className={styles.slotInfo}>
-                        {new Date(a.doctorSlot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        {" — "}
-                        {new Date(a.doctorSlot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(a.doctorSlot.startTime).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                        —{" "}
+                        {new Date(a.doctorSlot.endTime).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </span>
                     )}
                   </div>
-
-                  <div className={styles.links}>
-                    {a.prescription ? (
-                      <a href={`/patient/prescriptions/${a.prescription.id}`} className={styles.linkInline}>View Prescription</a>
-                    ) : null}
-
-                    {a.reports?.length ? (
-                      <a href={a.reports[0].fileUrl} target="_blank" rel="noreferrer" className={styles.linkInline}>View Report</a>
-                    ) : null}
-                  </div>
                 </div>
 
+                {/* RIGHT COLUMN */}
                 <div className={styles.cardRight}>
                   {a.status === "UPCOMING" && (
                     <button
@@ -137,7 +183,18 @@ export default function PatientAppointments() {
                     </button>
                   )}
 
-                  <Link href={`/patient/appointments/${a.id}`} className={styles.viewBtn}>Details</Link>
+                  {/* DELETE BUTTON */}
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={() => deleteAppointment(a)}
+                    disabled={actionLoading === a.id}
+                  >
+                    {actionLoading === a.id ? "Deleting…" : "Delete"}
+                  </button>
+
+                  <Link href={`/patient/appointments/${a.id}`} className={styles.viewBtn}>
+                    Details
+                  </Link>
                 </div>
               </div>
             ))}

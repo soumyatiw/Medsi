@@ -1,4 +1,3 @@
-// src/pages/patient/index.js
 import NavbarPatient from "../../components/Dashboard/NavbarPatient";
 import DashboardCard from "../../components/Dashboard/DashboardCard";
 import styles from "../../styles/PatientDashboard.module.css";
@@ -167,19 +166,17 @@ export default function PatientDashboard({ user }) {
               <h3 className={styles.sectionTitle}>Recent Prescriptions</h3>
 
               {recentPrescriptions.length ? (
-                recentPrescriptions.slice(0, 4).map((p) => (
+                recentPrescriptions.map((p) => (
                   <div key={p.id} className={styles.smallCard}>
                     <div className={styles.smallCardRow}>
                       <div>
                         <div className={styles.muted}>Doctor</div>
-                        <div className={styles.bold}>Dr. {p.doctor?.user?.name ?? "—"}</div>
+                        <div className={styles.bold}>Dr. {p.doctor?.user?.name}</div>
                       </div>
 
                       <div>
                         <div className={styles.muted}>Date</div>
-                        <div className={styles.bold}>
-                          {new Date(p.createdAt).toLocaleDateString()}
-                        </div>
+                        <div className={styles.bold}>{new Date(p.createdAt).toLocaleDateString()}</div>
                       </div>
                     </div>
 
@@ -202,12 +199,12 @@ export default function PatientDashboard({ user }) {
               <h3 className={styles.sectionTitle}>Recent Reports</h3>
 
               {recentReports.length ? (
-                recentReports.slice(0, 6).map((r) => (
+                recentReports.map((r) => (
                   <div key={r.id} className={styles.reportItem}>
                     <div>
                       <div className={styles.bold}>{r.fileType || "Report"}</div>
                       <div className={styles.mutedSmall}>
-                        {new Date(r.uploadedAt || r.createdAt).toLocaleDateString()}
+                        {new Date(r.createdAt).toLocaleDateString()}
                       </div>
                     </div>
 
@@ -221,17 +218,6 @@ export default function PatientDashboard({ user }) {
               ) : (
                 <div className={styles.cardEmpty}><p>No reports uploaded.</p></div>
               )}
-            </section>
-
-            {/* QUICK ACTIONS */}
-            <section className={styles.section}>
-              <h3 className={styles.sectionTitle}>Quick Actions</h3>
-              <div className={styles.actionsGrid}>
-                <Link href="/patient/book" className={styles.actionCard}>Book Appointment</Link>
-                <Link href="/patient/appointments" className={styles.actionCard}>My Appointments</Link>
-                <Link href="/patient/prescriptions" className={styles.actionCard}>Prescriptions</Link>
-                <Link href="/patient/reports" className={styles.actionCard}>Reports</Link>
-              </div>
             </section>
           </div>
         </div>

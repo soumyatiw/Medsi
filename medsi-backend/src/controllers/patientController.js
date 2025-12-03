@@ -2,73 +2,176 @@ const prisma = require("../config/prismaClient");
 
 /* --------------------------------------------------------------
    PATIENT DASHBOARD STATS 
-   - appointments count
-   - prescriptions count
-   - reports count
 ---------------------------------------------------------------*/
 exports.getDashboardStats = async (req, res) => {
   try {
     const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.id }
-    });
-
-    if (!patient) {
-      return res.status(403).json({ message: "Patient profile not found" });
-    }
-
-    const appointments = await prisma.appointment.count({
-      where: { patientId: patient.id }
-    });
-
-    const prescriptions = await prisma.prescription.count({
-      where: { patientId: patient.id }
-    });
-
-    const reports = await prisma.report.count({
-      where: { patientId: patient.id }
-    });
-
-    return res.json({
-      appointments,
-      prescriptions,
-      reports
-    });
-
-  } catch (err) {
-    console.error("getDashboardStats error:", err);
-    return res.status(500).json({ message: "Failed to load dashboard stats" });
-  }
-};
-
-
-exports.listAppointments = async (req, res) => {
-  try {
-    // STEP 1 — Find patient by userId
-    const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.id }
+      where: { userId: req.user.id },
     });
 
     if (!patient) {
       return res.status(404).json({ message: "Patient profile not found" });
     }
 
-    // STEP 2 — Fetch appointments using patient.id
+    const patientId = patient.id;
+
+    const totalAppointments = await prisma.appointment.count({
+      where: { patientId },
+    });
+
+    const nextAppointment = await prisma.appointment.findFirst({
+      where: {
+        patientId,
+        status: "UPCOMING",
+        appointmentDate: { gte: new Date() },
+      },
+      include: {
+        doctor: { include: { user: true } },
+      },
+      orderBy: { appointmentDate: "asc" },
+    });
+
+    const totalPrescriptions = await prisma.prescription.count({
+      where: { patientId },
+    });
+
+    const recentPrescriptions = await prisma.prescription.findMany({
+      where: { patientId },
+      include: {
+        doctor: { include: { user: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 4,
+    });
+
+    const totalReports = await prisma.report.count({
+      where: { patientId },
+    });
+
+    let recentReports = [];
+    try {
+      recentReports = await prisma.report.findMany({
+        where: { patientId },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+      });
+    } catch (err) {
+      recentReports = await prisma.report.findMany({
+        where: { patientId },
+        orderBy: { uploadedAt: "desc" },
+        take: 6,
+      });
+    }
+
+    return res.json({
+      totalAppointments,
+      nextAppointment,
+      totalPrescriptions,
+      totalReports,
+      recentPrescriptions,
+      recentReports,
+    });
+  } catch (err) {
+    console.error("getDashboardStats error:", err);
+    return res.status(500).json({ message: "Failed to load dashboard stats" });
+  }
+};
+
+/* --------------------------------------------------------------
+   LIST APPOINTMENTS FOR LOGGED-IN PATIENT
+---------------------------------------------------------------*/
+exports.listAppointments = async (req, res) => {
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: { userId: req.user.id },
+    });
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient profile not found" });
+    }
+
     const appointments = await prisma.appointment.findMany({
       where: { patientId: patient.id },
       include: {
-        doctor: {
-          include: { user: true }
-        },
-        doctorSlot: true
+        doctor: { include: { user: true } },
+        doctorSlot: true,
       },
-      orderBy: { appointmentDate: "asc" }
+      orderBy: { appointmentDate: "asc" },
     });
 
     return res.json({ appointments });
-
   } catch (error) {
     console.error("listAppointments error:", error);
     return res.status(500).json({ message: "Server error" });
   }
 };
 
+/* --------------------------------------------------------------
+   UPDATE / CANCEL APPOINTMENT
+---------------------------------------------------------------*/
+exports.updateAppointment = async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+    const { status } = req.body;
+
+    if (!status || !["CANCELLED", "COMPLETED"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    // find patient by userId
+    const patient = await prisma.patient.findUnique({ where: { userId: req.user.id } });
+    if (!patient) return res.status(404).json({ message: "Patient profile not found" });
+
+    // ensure appointment belongs to patient
+    const appointment = await prisma.appointment.findFirst({ where: { id: appointmentId, patientId: patient.id } });
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+
+    // Update appointment status
+    const updated = await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { status },
+    });
+
+    // If cancelled, free the slot(s) that referenced this appointment
+    if (status === "CANCELLED") {
+      await prisma.doctorSlot.updateMany({
+        where: { appointmentId: appointmentId },
+        data: { status: "AVAILABLE", appointmentId: null },
+      });
+    }
+
+    return res.json({ message: "Appointment updated successfully", appointment: updated });
+  } catch (err) {
+    console.error("updateAppointment error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+/* --------------------------------------------------------------
+   PERMANENT DELETE APPOINTMENT
+---------------------------------------------------------------*/
+exports.deleteAppointment = async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+
+    const patient = await prisma.patient.findUnique({ where: { userId: req.user.id } });
+    if (!patient) return res.status(404).json({ message: "Patient profile not found" });
+
+    const appointment = await prisma.appointment.findFirst({ where: { id: appointmentId, patientId: patient.id } });
+    if (!appointment) return res.status(404).json({ message: "Appointment not found" });
+
+    // free slot if linked
+    await prisma.doctorSlot.updateMany({
+      where: { appointmentId },
+      data: { appointmentId: null, status: "AVAILABLE" },
+    });
+
+    await prisma.appointment.delete({ where: { id: appointmentId } });
+
+    return res.json({ message: "Appointment permanently deleted" });
+  } catch (err) {
+    console.error("deleteAppointment error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

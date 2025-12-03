@@ -1,122 +1,257 @@
-/* src/styles/PatientAppointments.module.css */
-
+/* ------------------ PAGE WRAPPER ------------------ */
 .container {
-  padding: 32px 48px;
-  min-height: 80vh;
+  padding: 40px 60px;
+  animation: fadeIn 0.3s ease;
 }
 
-/* Header */
 .header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  margin-bottom:18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
 }
-.title { margin:0; font-size:24px; color:#0f172a; font-weight:700; }
-.subtitle { margin:0; color:#64748b; font-size:13px; margin-top:6px; }
 
-/* Header actions */
-.headerActions { display:flex; gap:10px; align-items:center; }
+.title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* ------------------ BUTTONS ------------------ */
 .primaryBtn {
-  background:linear-gradient(90deg,#4ca1af,#2b9aa0);
-  color:white;
-  padding:10px 14px;
-  border-radius:10px;
-  text-decoration:none;
-  font-weight:600;
+  background: #4ca1af;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
 }
+
+.primaryBtn:hover {
+  background: #3b8d9c;
+}
+
 .ghostBtn {
-  background:transparent;
-  border:1px solid #e6eef8;
-  color:#334155;
-  padding:8px 12px;
-  border-radius:8px;
-  cursor:pointer;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
-/* Empty / Loading / Error */
-.empty {
-  padding:28px;
-  background:#fff;
-  border-radius:10px;
-  text-align:center;
-  color:#64748b;
-  box-shadow:0 6px 18px rgba(2,6,23,0.04);
-}
-.error {
-  padding:16px;
-  background:#fff6f6;
-  color:#9b1c1c;
-  border-radius:8px;
-  border:1px solid #ffd7d7;
+.ghostBtn:hover {
+  background: #f1f5f9;
 }
 
-/* Appointments list */
-.list { display:flex; flex-direction:column; gap:12px; margin-top:12px; }
+/* ------------------ LIST WRAPPER ------------------ */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-/* Card */
+/* ------------------ APPOINTMENT CARD ------------------ */
 .card {
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-  box-shadow:0 8px 24px rgba(2,6,23,0.04);
+  display: flex;
+  justify-content: space-between;
+  padding: 18px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+  border: 1px solid #eef2f7;
+  animation: fadeUp 0.35s ease;
 }
-.cardLeft { width:220px; min-width:160px; }
-.date { font-weight:700; color:#0f172a; }
-.doctor { color:#334155; margin-top:6px; font-weight:600; }
-.meta { color:#94a3b8; font-size:13px; margin-top:6px; }
 
-/* Middle */
-.cardMiddle { flex:1; }
-.reason { color:#334155; margin-bottom:8px; }
-.statusRow { display:flex; gap:10px; align-items:center; margin-bottom:8px; }
+/* LEFT COLUMN */
+.cardLeft {
+  width: 28%;
+}
+
+.date {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.doctor {
+  font-size: 15px;
+  margin-top: 4px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.meta {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* MIDDLE */
+.cardMiddle {
+  width: 45%;
+}
+
+.reason {
+  margin-bottom: 8px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .badge {
-  padding:6px 10px;
-  border-radius:999px;
-  font-weight:700;
-  color:white;
-  font-size:12px;
-}
-.upcoming { background:#059669; } /* green */
-.completed { background:#2563eb; } /* blue */
-.cancelled { background:#ef4444; } /* red */
-
-.slotInfo { color:#475569; font-size:13px; background:#f8fafc; padding:6px 8px; border-radius:8px; }
-
-/* small inline links */
-.links { display:flex; gap:12px; margin-top:8px; }
-.linkInline {
-  color:#2563eb;
-  text-decoration:underline;
-  font-weight:600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
 }
 
-/* Right area */
-.cardRight { display:flex; flex-direction:column; gap:8px; align-items:flex-end; min-width:140px; }
+.upcoming {
+  background: #2563eb;
+}
+
+.completed {
+  background: #16a34a;
+}
+
+.cancelled {
+  background: #dc2626;
+}
+
+.slotInfo {
+  font-size: 13px;
+  color: #475569;
+  padding: 4px 6px;
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+/* RIGHT COLUMN (ACTIONS) */
+.cardRight {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
 .cancelBtn {
-  background:#fff0f0;
-  border:1px solid #ffd7d7;
-  color:#b71c1c;
-  padding:8px 10px;
-  border-radius:8px;
-  cursor:pointer;
-}
-.viewBtn {
-  text-decoration:none;
-  padding:8px 10px;
-  border-radius:8px;
-  background:#eef2ff;
-  color:#1e3a8a;
-  font-weight:600;
+  background: #fff5f5;
+  border: 1px solid #dc2626;
+  color: #dc2626;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-/* Responsive */
+.cancelBtn:hover {
+  background: #ffe2e2;
+}
+
+/* DELETE BUTTON */
+.deleteBtn {
+  background: #ffebeb;
+  border: 1px solid #d11a1a;
+  color: #d11a1a;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background: #ffd7d7;
+}
+
+/* VIEW BTN */
+.viewBtn {
+  padding: 8px 14px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.viewBtn:hover {
+  background: #cbd5e1;
+}
+
+/* EMPTY & ERROR STATES */
+.empty {
+  text-align: center;
+  padding: 40px 0;
+  color: #475569;
+}
+
+.error {
+  text-align: center;
+  padding: 15px;
+  background: #ffe4e6;
+  border: 1px solid #f43f5e;
+  color: #b91c1c;
+  border-radius: 8px;
+}
+
+/* LINKS */
+.linkInline {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ------------------ ANIMATIONS ------------------ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ------------------ RESPONSIVE ------------------ */
 @media (max-width: 900px) {
-  .card { flex-direction:column; align-items:flex-start; }
-  .cardLeft { width:100%; min-width:auto; }
-  .cardRight { width:100%; flex-direction:row; justify-content:space-between; margin-top:8px; }
+  .card {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cardLeft, .cardMiddle, .cardRight {
+    width: 100%;
+  }
+
+  .cardRight {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 25px 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .headerActions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+  }
 }

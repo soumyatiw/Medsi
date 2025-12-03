@@ -4,21 +4,23 @@ const router = express.Router();
 
 const {
   getDashboardStats,
-  listAppointments
+  listAppointments,
+  updateAppointment,
+  deleteAppointment
 } = require('../controllers/patientController');
 
 const { verifyToken, checkRole } = require('../middleware/authMiddleware');
 
-// All routes require PATIENT authentication ------------------------------
+// requireToken + role guard for all patient routes
 router.use(verifyToken);
 router.use(checkRole("PATIENT"));
 
-/* ------------------ Dashboard ------------------ */
+/* Dashboard */
 router.get("/dashboard", getDashboardStats);
-router.get(
-  "/appointments",
-  listAppointments
-);
 
+/* Appointments */
+router.get("/appointments", listAppointments);
+router.put("/appointments/:id", updateAppointment);
+router.delete("/appointments/:id", deleteAppointment);
 
 module.exports = router;
