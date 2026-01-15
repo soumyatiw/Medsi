@@ -1,4 +1,4 @@
-# Medsi – Patient Prescription & Appointment Management System**
+# Medsi – Patient Prescription & Appointment Management System
 
 A complete medical management system for doctors, patients, and administrators.
 Medsi provides a centralized way to manage appointments, prescriptions, reports, and health records — with secure authentication and role-based access.
