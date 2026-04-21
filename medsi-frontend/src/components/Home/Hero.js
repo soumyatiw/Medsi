@@ -1,7 +1,6 @@
 import styles from "./Hero.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { Pill, Dna, Stethoscope } from "lucide-react";
 
 export default function Hero() {
     return (
@@ -28,34 +27,12 @@ export default function Hero() {
                         Login as Doctor
                     </Link>
                 </div>
-
-                {/* Floating Badges */}
-                <div className={styles.badge1}>24/7 Access</div>
-                <div className={styles.badge2}>Secure Medical Records</div>
-                <div className={styles.badge3}>Personalized Health Insights</div>
             </div>
-
 
             <div className={styles.right}>
                 {/* Background Glass Card */}
                 <div className={styles.glassCard}></div>
 
-                {/* Floating Icons */}
-                <Pill
-                    className={`${styles.icon} ${styles.icon1}`}
-                    color="#ed7c18ff"
-                    size={48}
-                />
-                <Dna
-                    className={`${styles.icon} ${styles.icon2}`}
-                    color="#7C3AED"
-                    size={48}
-                />
-                <Stethoscope
-                    className={`${styles.icon} ${styles.icon3}`}
-                    color="#0D9488"
-                    size={48}
-                />
 
                 <Image
                     src="/images/hero.png"
