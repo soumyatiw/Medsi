@@ -34,7 +34,7 @@ export default function BookDoctor() {
             <h2 className={styles.pageTitle}>Select a Doctor</h2>
             <p className={styles.pageSubtitle}>Choose a specialist and pick a slot that suits you.</p>
           </div>
-
+          
           <div className={styles.headerControls}>
             <select
               className={styles.select}
@@ -56,7 +56,7 @@ export default function BookDoctor() {
             filtered.map((doc) => (
               <div key={doc.id} className={styles.card}>
                 <div className={styles.docTop}>
-                  <div className={styles.docAvatar}>{(doc.user.name || "D").slice(0,1)}</div>
+                  <div className={styles.docAvatar}>{(doc.user.name || "D").slice(0, 1)}</div>
                   <div>
                     <div className={styles.docName}>Dr. {doc.user.name}</div>
                     <div className={styles.docSpec}>{doc.specialization || "General"}</div>

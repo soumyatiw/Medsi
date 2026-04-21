@@ -166,6 +166,7 @@ export default function DoctorPatients({ user }) {
     try {
       await API.delete(`/api/doctor/patients/${p.id}`);
       alert("Patient unlinked!");
+      setShowEdit(false);
       fetchPatients();
 
     } catch (err) {
@@ -244,9 +245,6 @@ export default function DoctorPatients({ user }) {
                     <td className={styles.actions}>
                       <button onClick={() => openView(p)}>View</button>
                       <button onClick={() => openEdit(p)}>Edit</button>
-                      <button className={styles.danger} onClick={() => handleUnlink(p)}>
-                        Unlink
-                      </button>
                     </td>
                   </tr>
                 ))
@@ -356,6 +354,14 @@ export default function DoctorPatients({ user }) {
             <textarea value={form.medicalNotes} onChange={(e) => setForm({ ...form, medicalNotes: e.target.value })} />
 
             <div className={styles.modalFooter}>
+              {/* Unlink button placed here in the edit section */}
+              <button
+                type="button"
+                className={styles.unlinkBtn}
+                onClick={() => handleUnlink(activePatient)}
+              >
+                Unlink Patient
+              </button>
               <button type="button" onClick={() => setShowEdit(false)}>Cancel</button>
               <button type="submit" className={styles.primary}>Save</button>
             </div>

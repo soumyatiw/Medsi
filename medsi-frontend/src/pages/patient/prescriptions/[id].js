@@ -5,6 +5,8 @@ import { useEffect, useState, useCallback } from "react";
 import NavbarPatient from "../../../components/Dashboard/NavbarPatient";
 import API from "../../../api/axiosInstance";
 import styles from "../../../styles/PatientPrescriptions.module.css";
+import Link from "next/link";
+import { requireAuth } from "../../../utils/protectedRoute";
 
 export default function PrescriptionDetails() {
   const router = useRouter();
@@ -15,9 +17,14 @@ export default function PrescriptionDetails() {
 
   const load = useCallback(async () => {
     if (!id) return;
-    const res = await API.get(`/api/patient/prescriptions/${id}`);
-    setPrescription(res.data?.prescription || null);
-    setLoading(false);
+    try {
+      const res = await API.get(`/api/patient/prescriptions/${id}`);
+      setPrescription(res.data?.prescription || null);
+    } catch (err) {
+      console.error("Failed to load prescription:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
   useEffect(() => {
@@ -29,7 +36,12 @@ export default function PrescriptionDetails() {
     return (
       <>
         <NavbarPatient />
-        <div className={styles.container}>Loading...</div>
+        <div className={styles.container}>
+          <div className={styles.empty}>
+            <div className={styles.spinner} />
+            Loading prescription…
+          </div>
+        </div>
       </>
     );
   }
@@ -38,67 +50,123 @@ export default function PrescriptionDetails() {
     <>
       <NavbarPatient />
       <div className={styles.container}>
-        <div className={styles.header}>
-          <div className={styles.title}>Prescription Details</div>
+
+        {/* BACK LINK */}
+        <Link href="/patient/prescriptions" className={styles.backLink}>
+          ← Back to Prescriptions
+        </Link>
+
+        {/* PAGE TITLE */}
+        <div className={styles.detailPageHeader}>
+          <h2 className={styles.pageTitle}>Prescription Details</h2>
         </div>
 
         <div className={styles.detailsWrap}>
           {/* LEFT MAIN CARD */}
           <div className={styles.detailsCard}>
+
+            {/* DOCTOR ROW */}
             <div className={styles.docRow}>
               <div className={styles.avatarLarge}>
-                {prescription.doctor?.user?.name?.slice(0, 1)}
+                {prescription.doctor?.user?.name?.slice(0, 1)?.toUpperCase() || "D"}
               </div>
               <div>
                 <div className={styles.docNameLarge}>
-                  Dr. {prescription.doctor?.user?.name}
+                  Dr. {prescription.doctor?.user?.name || "—"}
                 </div>
                 <div className={styles.docSpecSmall}>
-                  {prescription.doctor?.specialization}
+                  {prescription.doctor?.specialization || "General Physician"}
                 </div>
               </div>
             </div>
 
+            <div className={styles.divider} />
+
+            {/* DATE */}
             <div className={styles.infoRow}>
-              <div className={styles.label}>Date:</div>
+              <div className={styles.label}>Date</div>
               <div className={styles.value}>
-                {new Date(prescription.createdAt).toLocaleString()}
+                {new Date(prescription.createdAt).toLocaleString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </div>
             </div>
 
+            {/* DIAGNOSIS */}
             <div className={styles.section}>
-              <div className={styles.label}>Diagnosis:</div>
-              <div className={styles.value}>{prescription.diagnosis}</div>
+              <div className={styles.sectionLabel}>Diagnosis</div>
+              <div className={styles.diagnosisBox}>
+                {prescription.diagnosis || "—"}
+              </div>
             </div>
 
+            {/* MEDICINES */}
             <div className={styles.section}>
-              <div className={styles.label}>Medicines:</div>
-              <ul className={styles.list}>
-                {(prescription.medicines || []).map((m, i) => (
-                  <li key={i}>{m}</li>
-                ))}
-              </ul>
+              <div className={styles.sectionLabel}>Prescribed Medicines</div>
+              {(prescription.medicines || []).length === 0 ? (
+                <p className={styles.noMeds}>No medicines prescribed.</p>
+              ) : (
+                <ul className={styles.medList}>
+                  {prescription.medicines.map((m, i) => (
+                    <li key={i} className={styles.medItem}>
+                      <span className={styles.medBullet}>{i + 1}</span>
+                      {m}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
+            {/* NOTES */}
             {prescription.notes && (
               <div className={styles.section}>
-                <div className={styles.label}>Notes:</div>
-                <div className={styles.value}>{prescription.notes}</div>
+                <div className={styles.sectionLabel}>Doctor's Notes</div>
+                <div className={styles.notesBox}>{prescription.notes}</div>
               </div>
             )}
           </div>
 
           {/* RIGHT SIDEBAR */}
-          <div className={styles.sideCard}>
-            <div className={styles.sideTitle}>Important Tips</div>
-            <ul className={styles.sideList}>
-              <li>Follow medication on time.</li>
-              <li>Avoid self-medication.</li>
-              <li>Contact doctor if symptoms worsen.</li>
-            </ul>
+          <div className={styles.sideCol}>
+            {/* TIPS CARD */}
+            <div className={styles.sideCard}>
+              <div className={styles.sideTitle}>Medication Tips</div>
+              <ul className={styles.sideList}>
+                <li>Take medicines at the scheduled times daily.</li>
+                <li>Do not skip doses even if you feel better.</li>
+                <li>Avoid self-medication or substitutions.</li>
+                <li>Contact your doctor if symptoms worsen.</li>
+                <li>Store medicines away from heat and moisture.</li>
+              </ul>
+            </div>
+
+            {/* SUMMARY CARD */}
+            <div className={styles.sideCard} style={{ marginTop: "16px" }}>
+              <div className={styles.sideTitle}>Summary</div>
+              <div className={styles.summaryRow}>
+                <span>Medicines</span>
+                <strong>{prescription.medicines?.length || 0}</strong>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Issued by</span>
+                <strong>Dr. {prescription.doctor?.user?.name || "—"}</strong>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Specialization</span>
+                <strong>{prescription.doctor?.specialization || "—"}</strong>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  return requireAuth(ctx, ["PATIENT"]);
 }

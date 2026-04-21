@@ -16,6 +16,18 @@ export default function DoctorAppointments() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  // Bulk-select state
+  const [selected, setSelected] = useState(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
+
+  // In-UI notification
+  const [toast, setToast] = useState(null); // { type: 'success'|'error', message }
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 3500);
+  };
+
   /* ---------------- FETCH APPOINTMENTS ---------------- */
   const fetchAppointments = useCallback(async (opts = {}) => {
     setLoading(true);
@@ -33,6 +45,7 @@ export default function DoctorAppointments() {
 
       setAppointments(res.data.data || []);
       setMeta(res.data.meta || { page: 1, totalPages: 1 });
+      setSelected(new Set()); // clear selection on refresh
     } catch (err) {
       console.error("Fetch Error:", err);
     } finally {
@@ -48,32 +61,76 @@ export default function DoctorAppointments() {
   const updateStatus = async (id, newStatus) => {
     try {
       await API.put(`/api/doctor/appointments/${id}/status`, { status: newStatus });
-      alert("Status updated!");
+      showToast("success", "Status updated successfully.");
       fetchAppointments();
     } catch (err) {
-      alert(err.response?.data?.message || "Update failed");
+      showToast("error", err.response?.data?.message || "Status update failed.");
     }
   };
 
-  /* ---------------- DELETE APPOINTMENT ---------------- */
-  const deleteAppointment = async (id) => {
-    if (!confirm("Delete this appointment?")) return;
+  /* ---------------- BULK DELETE ---------------- */
+  const handleBulkDelete = async () => {
+    if (selected.size === 0) return;
+    if (!window.confirm(`Delete ${selected.size} appointment(s)?`)) return;
 
+    setBulkLoading(true);
     try {
-      await API.delete(`/api/doctor/appointments/${id}`);
-      alert("Appointment deleted");
+      await Promise.all(
+        [...selected].map((id) => API.delete(`/api/doctor/appointments/${id}`))
+      );
+      showToast("success", `${selected.size} appointment(s) deleted.`);
       fetchAppointments();
     } catch (err) {
-      alert(err.response?.data?.message || "Delete failed");
+      showToast("error", err.response?.data?.message || "Delete failed.");
+    } finally {
+      setBulkLoading(false);
     }
   };
+
+  /* ---------------- SELECT HELPERS ---------------- */
+  const toggleSelect = (id) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selected.size === appointments.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(appointments.map((a) => a.id)));
+    }
+  };
+
+  const allSelected = appointments.length > 0 && selected.size === appointments.length;
 
   return (
     <>
       <NavbarDoctor />
 
       <div className={styles.container}>
-        <h2 className={styles.title}>Appointments</h2>
+        <div className={styles.titleRow}>
+          <h2 className={styles.title}>Appointments</h2>
+
+          {selected.size > 0 && (
+            <button
+              className={styles.bulkDelete}
+              onClick={handleBulkDelete}
+              disabled={bulkLoading}
+            >
+              {bulkLoading ? "Deleting…" : `Delete Selected (${selected.size})`}
+            </button>
+          )}
+        </div>
+
+        {/* IN-UI TOAST */}
+        {toast && (
+          <div className={`${styles.toast} ${styles[toast.type]}`}>
+            {toast.type === "success" ? "Done:" : "Error:"} {toast.message}
+          </div>
+        )}
 
         {/* FILTERS */}
         <div className={styles.filters}>
@@ -107,6 +164,14 @@ export default function DoctorAppointments() {
           <table className={styles.table}>
             <thead>
               <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    onChange={toggleSelectAll}
+                    title="Select all"
+                  />
+                </th>
                 <th>Patient</th>
                 <th>Email</th>
                 <th>Date</th>
@@ -118,18 +183,25 @@ export default function DoctorAppointments() {
 
             <tbody>
               {loading ? (
-                <tr><td colSpan="6">Loading...</td></tr>
+                <tr><td colSpan="7">Loading...</td></tr>
               ) : appointments.length === 0 ? (
-                <tr><td colSpan="6">No appointments</td></tr>
+                <tr><td colSpan="7">No appointments</td></tr>
               ) : (
                 appointments.map((a) => (
-                  <tr key={a.id}>
+                  <tr key={a.id} className={selected.has(a.id) ? styles.selectedRow : ""}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selected.has(a.id)}
+                        onChange={() => toggleSelect(a.id)}
+                      />
+                    </td>
                     <td>{a.patient?.user?.name}</td>
                     <td>{a.patient?.user?.email}</td>
 
                     <td>{new Date(a.appointmentDate).toLocaleString()}</td>
 
-                    {/* STATUS */}
+                    {/* STATUS BADGE */}
                     <td>
                       <span className={`${styles.status} ${styles[a.status.toLowerCase()]}`}>
                         {a.status}
@@ -139,8 +211,6 @@ export default function DoctorAppointments() {
                     <td>{a.reason || "-"}</td>
 
                     <td className={styles.actions}>
-                      
-
                       {/* STATUS DROPDOWN */}
                       <select
                         value={a.status}
@@ -150,11 +220,6 @@ export default function DoctorAppointments() {
                         <option value="COMPLETED">COMPLETED</option>
                         <option value="CANCELLED">CANCELLED</option>
                       </select>
-
-                      {/* DELETE */}
-                      <button className={styles.delete} onClick={() => deleteAppointment(a.id)}>
-                        Delete
-                      </button>
 
                       {/* ADD PRESCRIPTION BUTTON */}
                       {(a.status === "UPCOMING" || a.status === "COMPLETED") && (

@@ -6,14 +6,22 @@ import styles from "../../../styles/PatientAppointments.module.css";
 import { requireAuth } from "../../../utils/protectedRoute";
 import Link from "next/link";
 
-// ICON
-import { Trash2 } from "lucide-react";
-
 export default function PatientAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
   const [error, setError] = useState(null);
+
+  // Bulk-select state
+  const [selected, setSelected] = useState(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
+
+  // In-UI toast notification
+  const [toast, setToast] = useState(null);
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 3500);
+  };
 
   /* Fetch appointments */
   const fetchAppointments = async () => {
@@ -24,6 +32,7 @@ export default function PatientAppointments() {
       const res = await API.get("/api/patient/appointments");
       const data = res.data?.appointments ?? [];
       setAppointments(Array.isArray(data) ? data : []);
+      setSelected(new Set());
     } catch (err) {
       console.error("Failed to load appointments:", err);
       setError(err.response?.data?.message || "Failed to load appointments");
@@ -40,58 +49,60 @@ export default function PatientAppointments() {
   /* Cancel appointment */
   const cancelAppointment = async (appt) => {
     const confirmCancel = confirm(
-      `Cancel appointment on ${new Date(
-        appt.appointmentDate
-      ).toLocaleString()} with Dr. ${appt.doctor?.user?.name || ""}?`
+      `Cancel appointment on ${new Date(appt.appointmentDate).toLocaleString()} with Dr. ${appt.doctor?.user?.name || ""}?`
     );
     if (!confirmCancel) return;
 
     setActionLoading(appt.id);
-
     try {
-      await API.put(`/api/patient/appointments/${appt.id}`, {
-        status: "CANCELLED",
-      });
-
-      alert("Appointment cancelled");
+      await API.put(`/api/patient/appointments/${appt.id}`, { status: "CANCELLED" });
+      showToast("success", "Appointment cancelled successfully.");
       fetchAppointments();
     } catch (err) {
-      console.error("Cancel failed:", err);
-      alert(err.response?.data?.message || "Failed to cancel appointment");
+      showToast("error", err.response?.data?.message || "Failed to cancel appointment.");
     } finally {
       setActionLoading(null);
     }
   };
 
-  /* Delete appointment */
-  const deleteAppointment = async (appt) => {
-    const confirmDelete = confirm(
-      `Permanently delete appointment on ${new Date(
-        appt.appointmentDate
-      ).toLocaleString()}? This action cannot be undone.`
-    );
-    if (!confirmDelete) return;
+  /* Bulk delete */
+  const handleBulkDelete = async () => {
+    if (selected.size === 0) return;
+    if (!window.confirm(`Permanently delete ${selected.size} appointment(s)? This cannot be undone.`)) return;
 
-    setActionLoading(appt.id);
-
+    setBulkLoading(true);
     try {
-      await API.delete(`/api/patient/appointments/${appt.id}`);
-      alert("Appointment deleted permanently");
+      await Promise.all([...selected].map((id) => API.delete(`/api/patient/appointments/${id}`)));
+      showToast("success", `${selected.size} appointment(s) deleted.`);
       fetchAppointments();
     } catch (err) {
-      console.error("Delete failed:", err);
-      alert(err.response?.data?.message || "Failed to delete appointment");
+      showToast("error", err.response?.data?.message || "Failed to delete appointments.");
     } finally {
-      setActionLoading(null);
+      setBulkLoading(false);
     }
   };
+
+  /* Select helpers */
+  const toggleSelect = (id) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selected.size === appointments.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(appointments.map((a) => a.id)));
+    }
+  };
+
+  const allSelected = appointments.length > 0 && selected.size === appointments.length;
 
   const formatDate = (iso) => {
-    try {
-      return new Date(iso).toLocaleString();
-    } catch {
-      return iso;
-    }
+    try { return new Date(iso).toLocaleString(); } catch { return iso; }
   };
 
   return (
@@ -103,10 +114,19 @@ export default function PatientAppointments() {
         <div className={styles.header}>
           <div>
             <h2 className={styles.title}>My Appointments</h2>
-            <p className={styles.subtitle}>Upcoming & past appointments</p>
+            <p className={styles.subtitle}>Upcoming &amp; past appointments</p>
           </div>
 
           <div className={styles.headerActions}>
+            {selected.size > 0 && (
+              <button
+                className={styles.bulkDeleteBtn}
+                onClick={handleBulkDelete}
+                disabled={bulkLoading}
+              >
+                {bulkLoading ? "Deleting…" : `Delete Selected (${selected.size})`}
+              </button>
+            )}
             <Link href="/patient/book" className={styles.primaryBtn}>
               Book Appointment
             </Link>
@@ -116,11 +136,18 @@ export default function PatientAppointments() {
           </div>
         </div>
 
+        {/* TOAST */}
+        {toast && (
+          <div className={`${styles.toast} ${styles[toast.type]}`}>
+            {toast.type === "success" ? "Done:" : "Error:"} {toast.message}
+          </div>
+        )}
+
         {/* MAIN CONTENT */}
         {loading ? (
           <div className={styles.empty}>Loading appointments…</div>
         ) : error ? (
-          <div className={styles.error}>{error}</div>
+          <div className={styles.errorBox}>{error}</div>
         ) : appointments.length === 0 ? (
           <div className={styles.empty}>
             You have no appointments.{" "}
@@ -129,76 +156,95 @@ export default function PatientAppointments() {
             </Link>
           </div>
         ) : (
-          <div className={styles.list}>
-            {appointments.map((a) => (
-              <div key={a.id} className={styles.card}>
-                {/* LEFT COLUMN */}
-                <div className={styles.cardLeft}>
-                  <div className={styles.date}>{formatDate(a.appointmentDate)}</div>
-                  <div className={styles.doctor}>Dr. {a.doctor?.user?.name || "—"}</div>
-                  <div className={styles.meta}>{a.doctor?.specialization || "General"}</div>
-                </div>
+          <>
+            {/* SELECT ALL ROW */}
+            <div className={styles.selectBar}>
+              <label className={styles.selectAllLabel}>
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={toggleSelectAll}
+                />
+                <span>Select all</span>
+              </label>
+              {selected.size > 0 && (
+                <span className={styles.selectedCount}>{selected.size} selected</span>
+              )}
+            </div>
 
-                {/* MIDDLE COLUMN */}
-                <div className={styles.cardMiddle}>
-                  <div className={styles.reason}>
-                    <strong>Reason:</strong> {a.reason || "—"}
+            <div className={styles.list}>
+              {appointments.map((a) => (
+                <div
+                  key={a.id}
+                  className={`${styles.card} ${selected.has(a.id) ? styles.cardSelected : ""}`}
+                >
+                  {/* CHECKBOX */}
+                  <div className={styles.checkboxCol}>
+                    <input
+                      type="checkbox"
+                      checked={selected.has(a.id)}
+                      onChange={() => toggleSelect(a.id)}
+                    />
                   </div>
 
-                  <div className={styles.statusRow}>
-                    <span
-                      className={`${styles.badge} ${
-                        a.status === "UPCOMING"
-                          ? styles.upcoming
-                          : a.status === "COMPLETED"
-                          ? styles.completed
-                          : styles.cancelled
-                      }`}
-                    >
-                      {a.status}
-                    </span>
+                  {/* LEFT COLUMN */}
+                  <div className={styles.cardLeft}>
+                    <div className={styles.date}>{formatDate(a.appointmentDate)}</div>
+                    <div className={styles.doctor}>Dr. {a.doctor?.user?.name || "—"}</div>
+                    <div className={styles.meta}>{a.doctor?.specialization || "General"}</div>
+                  </div>
 
-                    {a.doctorSlot && (
-                      <span className={styles.slotInfo}>
-                        {new Date(a.doctorSlot.startTime).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}{" "}
-                        —{" "}
-                        {new Date(a.doctorSlot.endTime).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                  {/* MIDDLE COLUMN */}
+                  <div className={styles.cardMiddle}>
+                    <div className={styles.reason}>
+                      <strong>Reason:</strong> {a.reason || "—"}
+                    </div>
+
+                    <div className={styles.statusRow}>
+                      <span
+                        className={`${styles.badge} ${
+                          a.status === "UPCOMING"
+                            ? styles.upcoming
+                            : a.status === "COMPLETED"
+                            ? styles.completed
+                            : styles.cancelled
+                        }`}
+                      >
+                        {a.status}
                       </span>
+
+                      {a.doctorSlot && (
+                        <span className={styles.slotInfo}>
+                          {new Date(a.doctorSlot.startTime).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}{" "}
+                          —{" "}
+                          {new Date(a.doctorSlot.endTime).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* RIGHT COLUMN */}
+                  <div className={styles.cardRight}>
+                    {a.status === "UPCOMING" && (
+                      <button
+                        className={styles.cancelBtn}
+                        onClick={() => cancelAppointment(a)}
+                        disabled={actionLoading === a.id}
+                      >
+                        {actionLoading === a.id ? "Cancelling…" : "Cancel"}
+                      </button>
                     )}
                   </div>
                 </div>
-
-                {/* RIGHT COLUMN */}
-                <div className={styles.cardRight}>
-                  {a.status === "UPCOMING" && (
-                    <button
-                      className={styles.cancelBtn}
-                      onClick={() => cancelAppointment(a)}
-                      disabled={actionLoading === a.id}
-                    >
-                      {actionLoading === a.id ? "Cancelling…" : "Cancel"}
-                    </button>
-                  )}
-
-                  {/* ICON DELETE BUTTON */}
-                  <button
-                    className={styles.deleteIconBtn}
-                    onClick={() => deleteAppointment(a)}
-                    disabled={actionLoading === a.id}
-                    title="Delete Appointment"
-                  >
-                    {actionLoading === a.id ? "…" : <Trash2 size={18} />}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </>

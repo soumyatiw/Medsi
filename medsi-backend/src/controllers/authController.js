@@ -120,14 +120,13 @@ exports.signup = async (req, res) => {
   }
 };
 
-
-// 🟡 LOGIN
+//  LOGIN
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) return res.status(400).json({ message: "User Not Found" });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
@@ -201,7 +200,7 @@ exports.refresh = (req, res, next) => {
   }
 };
 
-// 🔴 LOGOUT
+//  LOGOUT
 exports.logout = async (req, res, next) => {
   try {
     // We can later add a token blacklist system here if needed

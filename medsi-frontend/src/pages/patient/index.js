@@ -72,7 +72,7 @@ export default function PatientDashboard({ user }) {
         {/* HERO */}
         <div className={styles.heroRow}>
           <div>
-            <h2 className={styles.heading}>Welcome, {user.name} 👋</h2>
+            <h2 className={styles.heading}>Welcome, {user.name}</h2>
             <p className={styles.subheading}>
               Manage your health — book appointments, view prescriptions & upload reports.
             </p>
